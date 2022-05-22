@@ -40,7 +40,7 @@
     <div class="category-wrap">
       <ul>
         <van-row type="flex" justify="space-between" align="space-between">
-            <van-col span="4" @click="$router.push('/category/filtercategory/6')">
+            <van-col span="4" @click="$router.push('/category/filtercategory/5')">
               <i class="iconfont icon-chongdian"></i>
               <span class="font-size-sm">配件</span>
             </van-col>
@@ -49,34 +49,34 @@
               <span class="font-size-sm">换电池</span>
             </van-col>
             <van-col span="4">
-              <i class="iconfont icon-xunhuan8"></i>
+              <i class="iconfont icon-xunhuan8" @click="$router.push('/sell')"></i>
               <span class="font-size-sm">回收</span>
             </van-col>
-            <van-col span="4" @click="$router.push('/category/filtercategory/7')">
+            <van-col span="4" @click="$router.push('/category/filtercategory/6')">
               <i class="iconfont icon-ziyuan"></i>
               <span class="font-size-sm">耳机</span>
             </van-col>
-            <van-col span="4" @click="$router.push('/category/filtercategory/8')">
+            <van-col span="4" @click="$router.push('/category/filtercategory/7')">
               <i class="iconfont icon-VR"></i>
               <span class="font-size-sm">穿戴</span>
             </van-col>
-            <van-col span="4" @click="$router.push('/category/filtercategory/9')">
+            <van-col span="4" @click="$router.push('/category/filtercategory/8')">
               <i class="iconfont icon-shoubiao"></i>
               <span class="font-size-sm">钟表</span>
             </van-col>
-            <van-col span="4" @click="$router.push('/category/filtercategory/11')">
+            <van-col span="4" @click="$router.push('/category/filtercategory/10')">
               <i class="iconfont icon-tibao" ></i>
               <span class="font-size-sm">奢侈品</span>
             </van-col>
-            <van-col span="4" @click="$router.push('/category/filtercategory/10')">
+            <van-col span="4" @click="$router.push('/category/filtercategory/9')">
               <i class="iconfont icon-huwai"></i>
               <span class="font-size-sm">运动户外</span>
             </van-col>
-            <van-col span="4" @click="$router.push('/category/filtercategory/13')">
+            <van-col span="4" @click="$router.push('/category/filtercategory/12')">
               <i class="iconfont icon-riyongbaihuo"></i>
               <span class="font-size-sm">生活百货</span>
             </van-col>
-            <van-col span="4" @click="$router.push('/category/filtercategory/12')">
+            <van-col span="4" @click="$router.push('/category/filtercategory/11')">
               <i class="iconfont icon-huazhuangpin"></i>
               <span class="font-size-sm">美妆</span>
             </van-col>
@@ -97,7 +97,7 @@
             <span>每日上新</span>
           </div>
           <ul>
-            <li v-for="(item,index) in asyncData.slice(0,5)" :key="index" >
+            <li v-for="(item,index) in recommends.slice(0,5)" :key="index" >
               <GoodsCard :asyncData="item" @click.native="onSend(item)">
                 <span class="more">看相似</span>
               </GoodsCard>
@@ -106,7 +106,7 @@
         </van-col>
         <van-col span="11">
           <ul>
-            <li v-for="(item,index) in asyncData.slice(5)" :key="index">
+            <li v-for="(item,index) in recommends.slice(5)" :key="index">
               <GoodsCard :asyncData="item">
                 <span class="more">看相似</span>
               </GoodsCard>
@@ -134,22 +134,10 @@ export default {
     [Tag.name]:Tag,
     GoodsCard
   },
+  props:["recommends"],
   data() {
     return {
       current: 0,
-      gridData:[
-        {id:"001",text:"配件"},
-        {id:"002",text:"换电池"},
-        {id:"003",text:"回收"},
-        {id:"004",text:"耳机"},
-        {id:"005",text:"穿戴"},
-        {id:"006",text:"钟表"},
-        {id:"007",text:"奢侈品"},
-        {id:"008",text:"运动户外"},
-        {id:"009",text:"生活百货"},
-        {id:"010",text:"美妆"},
-      ],
-      asyncData:[]
     }
   },
   computed:{
@@ -170,27 +158,6 @@ export default {
     }
   },
   mounted(){
-    if(!JSON.parse(sessionStorage.getItem("recommend_data"))){
-      const xhr = new XMLHttpRequest()
-      xhr.open("GET","http://8.219.72.10:9000/pullgoods")
-      const asyncPull = new Promise((resolve,reject)=>{
-        xhr.send()
-        xhr.onreadystatechange = function(){
-          if(xhr.readyState===4){
-            if(xhr.status>=200 && xhr.status<300){
-              resolve(JSON.parse(xhr.response))
-            }
-          }
-        }
-      })
-      asyncPull.then((val)=>{
-        this.asyncData.push(...val)
-        sessionStorage.setItem("recommend_data",JSON.stringify(this.asyncData))
-        console.log(this.asyncData)
-      })
-    }else{
-      this.asyncData.push(...JSON.parse(sessionStorage.getItem("recommend_data")))
-    }
   }
 }
 </script>

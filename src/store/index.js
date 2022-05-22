@@ -1,24 +1,17 @@
+/* vue最核心的管理对象store */
+
 import Vue from "vue"
 import Vuex from "vuex"
+import state from "./state"
+import actions from "./actions"
+import mutations from "./mutations"
+import getters from "./getters"
 
 Vue.use(Vuex)
 
-const actions = {
-  pulldata(context,value){
-    context.commit('PullData',value)
-  }
-}
-const mutations = {
-  PullData(state,value){
-    state.goodsdata = value
-  }
-}
-const state = {
-  goodsdata:{}
-}
-
 export default new Vuex.Store({
+  state,
   actions,
   mutations,
-  state
+  getters
 })

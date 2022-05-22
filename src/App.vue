@@ -27,12 +27,18 @@ export default {
   },
   created(){
     if(window.localStorage.getItem("demodata")){
-      this.$store.commit("PullData",JSON.parse(window.localStorage.getItem("demodata")))
-      // this.$store.replaceState(Object.assign({},this.$store.state,JSON.parse(window.localStorage.getItem("demodata"))))
+      this.$store.commit("receive_category",JSON.parse(window.localStorage.getItem("aliveCategory")))
+      this.$store.commit("PullData",JSON.parse(window.localStorage.getItem("aliveDetail")))
     }
     window.addEventListener("beforeunload",()=>{
-      window.localStorage.setItem("demodata",JSON.stringify(this.$store.state.goodsdata))
+      window.localStorage.setItem("aliveCategory",JSON.stringify(this.$store.state.categorys))
+      window.localStorage.setItem("aliveDetail",JSON.stringify(this.$store.state.goodsdata))
+      
     })
+  },
+  mounted(){
+    this.$store.dispatch("getCommendGoods")
+    this.$store.dispatch("getCategory")
   }
 }
 </script>

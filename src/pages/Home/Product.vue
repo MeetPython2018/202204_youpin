@@ -2,7 +2,7 @@
   <main>
     <div class="nav-wrap">
       <van-row>
-        <van-col span="5" v-for="item in navData" :key="item.id">
+        <van-col span="5" v-for="(item,index) in category['items'].slice(0,7)" :key="index">
           <div class="iconbox">
             <van-image src="">
               <template v-slot:loading>
@@ -11,7 +11,7 @@
             </van-image>
            </div>
           <div class="title">
-            <span>{{item.text}}</span>
+            <span>{{item}}</span>
           </div>
         </van-col>
         <van-col span="5">
@@ -25,32 +25,24 @@
       </van-row>
     </div>
     <div class="good-wrap">
-      <van-row type="flex" justify="space-between" align="top">
-        <van-col span="11">
-          <ul>
-            <li v-for="item in 5" :key="item">
-              <GoodsCard :asyncData="asyncData"/>
-            </li>
-          </ul>
-        </van-col>
-        <van-col span="11">
-          <ul>
-            <li v-for="item in 5" :key="item">
-              <GoodsCard :asyncData="asyncData"/>
-            </li>
-          </ul>
-        </van-col>
-      </van-row>
+      <ul>
+        <li v-for="(item,index) in recommends" :key="index" >
+          <GoodsCard :asyncData="item" @click.native="onSend(item)">
+            <span class="more">看相似</span>
+          </GoodsCard>
+        </li>
+      </ul>
     </div>
   </main>
 </template>
 
 <script>
+import {mapState} from "vuex"
 import {Row,Col,Image as VanImage,Loading,Tag} from "vant"
 import GoodsCard from "../../components/PublicComponents/GoodsCard.vue"
 export default {
   name:"Product",
-  props:["navData"],
+  props:["category"],
   data() {
     return {
       
@@ -65,13 +57,7 @@ export default {
     GoodsCard,
   },
   computed:{
-    asyncData(){
-      return {
-        imgurl:'',
-        rate:"64旧",
-        info:["iPhone","10","Pro Max","深空灰","64G"]
-      }
-    }
+    ...mapState(["recommends"])
   }
 }
 </script>
@@ -132,55 +118,49 @@ export default {
       }
     }
     .good-wrap{
-      .van-row{
-        width: 100%;
-        .van-col{
-          width: 48%;
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-start;
-          ul{
-            margin-top: -16px;
-            li{
+      ul{
+        display: flex;
+        justify-content: space-between;
+        margin-top: -16px;
+        flex-wrap: wrap;
+        li{
+          flex: 0 0 48%;
+          box-shadow: 0 0 8px rgba(0, 0, 0, 8%);
+          border-radius: 8px;
+          margin: 16px 0 0;
+          a{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            font-size: @font-size-md;
+            color: #000;
+            .imgwrap{
+              width: 80%;
+              height: 140px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              background: #f5f5f5;
+              margin-bottom: 16px;
+            }
+            .title{
+              margin-bottom: 8px;
+              .van-tag{
+                border-radius: 5px;
+                margin-right: 5px;
+              }
+            }
+            .price{
               width: 100%;
-              box-shadow: 0 0 8px rgba(0, 0, 0, 8%);
-              border-radius: 8px;
-              margin: 16px 0;
-              a{
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                padding: 10px;
-                font-size: @font-size-md;
-                color: #000;
-                .imgwrap{
-                  width: 80%;
-                  height: 140px;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  background: #f5f5f5;
-                  margin-bottom: 16px;
-                }
-                .title{
-                  margin-bottom: 8px;
-                  .van-tag{
-                    border-radius: 5px;
-                    margin-right: 5px;
-                  }
-                }
-                .price{
-                  width: 100%;
-                  display: flex;
-                  justify-content: space-between;
-                  span:first-child{
-                    color: @red;
-                    font-family: "macfont";
-                  }
-                  span:last-child{
-                    opacity: .7;
-                  }
-                }
+              display: flex;
+              justify-content: space-between;
+              span:first-child{
+                color: @red;
+                font-family: "macfont";
+              }
+              span:last-child{
+                opacity: .7;
               }
             }
           }
