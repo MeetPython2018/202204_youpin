@@ -1,0 +1,14 @@
+.clearfix::before,
+.clearfix::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+@font-face {
+  font-family: "macfont";
+  src: url("../fonts/HhyaU5sn9vOmLzloC_U.43eb9ab.woff2");
+}
+.number {
+  font-family: "macfont";
+  letter-spacing: 1px;
+}
