@@ -9,7 +9,8 @@
         height="60"
         src="http://8.219.72.10:9000/img/user.png"
       />
-      <span>闲杂人员_<span class="number">No.101</span></span>
+      <span @click="$router.push('/sign')">点击登录/注册</span>
+      <!-- <span>闲杂人员_<span class="number">No.101</span></span> -->
       </div>
       <div class="serve">
         <van-cell-group inset>

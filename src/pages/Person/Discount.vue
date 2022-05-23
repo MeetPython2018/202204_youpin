@@ -54,7 +54,7 @@
 </template>
 
 <script>
-// import { format } from 'timeago.js';
+
 import { format, render, cancel, register } from 'timeago.js';
 import dayjs from "dayjs"
 import {NavBar,Empty,CouponList,Tab,Tabs,Button,SubmitBar,Checkbox,CheckboxGroup,Toast,Image as VanImage,Tag} from "vant"

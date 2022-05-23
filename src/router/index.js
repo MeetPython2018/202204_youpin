@@ -4,6 +4,7 @@ import VueRouter from "vue-router"
 Vue.use(VueRouter)
 
 import Home from "../pages/Home/Home.vue"
+import Sign from "../components/PublicComponents/Sign.vue"
 import Category from "../pages/Category/Category.vue"
 import Sell from "../pages/Sell/Sell.vue"
 import CallCenter from "../pages/CallCenter/CallCenter.vue"
@@ -31,6 +32,11 @@ export default new VueRouter({
     {
       path:"/",
       redirect:"/home"
+    },
+    {
+      path:'/sign',
+      component:Sign,
+      meta:{hidenfooter:true}
     },
     {
       path: "/home",
