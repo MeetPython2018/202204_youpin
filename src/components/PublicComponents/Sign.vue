@@ -144,11 +144,17 @@ export default {
       this.isPassing = true,
       this.$refs.dragVerify.reset()
     },
-    onSubmit(){
+    async onSubmit(){
       if(this.signWay){
         if(this.validator && /\d{6}/.test(this.sms)){
           Toast.success("手机号和验证码都已填写,可以向服务器发送请求！")
-          ajax("/api/sign",{"username":this.tel,"password":this.sms},"POST")
+          const res = await ajax("/api/sign",{username:this.tel,password:this.sms},"POST")
+          // console.log(res)
+          this.$store.commit("setLogin",res)
+          localStorage.setItem("login",JSON.stringify(res))
+          if(res.code===1){
+            this.$router.replace("/")
+          }
         }else{
           Toast.fail("手机号和验证码格式不正确")
           return false
@@ -157,10 +163,8 @@ export default {
         if(this.regEmail){
           Toast.success("邮箱和验证码都已填写,可以向服务器发送请求！")
         }else{
-
         }
       }
-      
     },
     // 邮箱登录验证
     checkEmail(){

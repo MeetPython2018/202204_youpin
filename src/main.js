@@ -2,22 +2,11 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from "./router"
 import store from "./store"
-import less from 'less';
+import less from 'less'
 import dragVerify from "vue-drag-verify2"
 
-import { Tab, Tabs, Swipe, SwipeItem,Grid, GridItem ,Tabbar, TabbarItem,Card } from 'vant';
-Vue.use(Tab);
-Vue.use(Tabs);
-Vue.use(Swipe);
-Vue.use(SwipeItem);
-Vue.use(Grid);
-Vue.use(GridItem);
-Vue.use(Tabbar);
-Vue.use(TabbarItem);
-Vue.use(Card);
-Vue.use(less);
+Vue.use(less)
 Vue.use(dragVerify)
-
 
 Vue.config.productionTip = false
 

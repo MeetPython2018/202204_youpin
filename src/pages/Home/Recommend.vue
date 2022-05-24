@@ -151,14 +151,12 @@ export default {
     },
     onSend(val){
       this.$router.push('/detailpage')
-      this.$store.commit("PullData",val)
+      this.$store.commit("cacheDetail",val)
       this.$nextTick(()=>{
         this.$bus.$emit("sendData",val)
       })
     }
   },
-  mounted(){
-  }
 }
 </script>
 

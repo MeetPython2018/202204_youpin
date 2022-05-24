@@ -9,8 +9,8 @@
         height="60"
         src="http://8.219.72.10:9000/img/user.png"
       />
-      <span @click="$router.push('/sign')">点击登录/注册</span>
-      <!-- <span>闲杂人员_<span class="number">No.101</span></span> -->
+      <span @click="$router.push('/sign')" v-if="login.code===0">点击登录/注册</span>
+      <span v-else>{{login.res.username}}</span>
       </div>
       <div class="serve">
         <van-cell-group inset>
@@ -31,7 +31,8 @@
 </template>
 
 <script>
-import { NavBar,Image as VanImage,Cell, CellGroup  } from 'vant';
+import {mapState} from "vuex"
+import { NavBar,Image as VanImage,Cell, CellGroup} from 'vant';
 export default {
   name:"Person",
   components:{
@@ -39,6 +40,9 @@ export default {
     [VanImage.name]:VanImage,
     [Cell.name]:Cell,
     [CellGroup.name]:CellGroup,
+  },
+  computed:{
+    ...mapState(["login"])
   }
 }
 </script>

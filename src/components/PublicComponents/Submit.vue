@@ -9,7 +9,7 @@
       <div class="empty-address">
         <i class="iconfont icon-dingxiang"></i>
         <p>你还没收货地址，点击添加</p>
-        <i class="iconfont icon-jiaru"></i>
+        <i class="iconfont icon-jiaru" @click="$router.push('/person/address')"></i>
       </div>
       <div class="order-list">
         <div class="mini-card">
@@ -17,18 +17,11 @@
             <van-image src=""></van-image>
           </div>
           <p class="title van-multi-ellipsis--l3">
-            <span>95新</span>
-            <span>iPhone 13 Pro</span>
-            <span>远峰蓝</span>
-            <span>256G</span>
-            <span>国行</span>
-            <span>100%电池138次充电</span>
-            <span>带包装配件</span>
-            <span>官方保修到2022年10月9号</span>
+            <span v-for="item in detailpage['title']" :key="item['_id']">{{item}}</span>
           </p>
           <div class="price">
             <i class="iconfont icon-renminbi1"></i>
-            <span>6899</span>
+            <span>{{detailpage.price}}</span>
           </div>
         </div>
       </div>
@@ -37,7 +30,7 @@
           <div class="name">
             <img src="../../assets/zhipay.svg" alt="" width="25">
             <span>支付宝</span>
-            <van-tag type="primary" plain size="medium">支持花呗<span class="number">64、128、512</span> 期结算</van-tag>
+            <van-tag type="primary" plain size="medium">支持花呗<span class="number">64、128、512</span>期结算</van-tag>
           </div>
           <van-switch v-model="zhiPay" size="20px" active-color="#ee0a24" inactive-color="#dcdee0" />
         </div>
@@ -97,7 +90,7 @@
     <div class="calc van-hairline--top">
       <div class="con">
         <div class="info">
-          <p>实付款:<span class="number"><i class="iconfont icon-renminbi1"></i>{{totalM}}</span></p>
+          <p>实付款:<span class="number"><i class="iconfont icon-renminbi1"></i>{{detailpage.price}}</span></p>
           <p>共<span class="number">1</span>件商品</p>
         </div>
         <div class="submit">
@@ -109,6 +102,7 @@
 </template>
 
 <script>
+import {mapState} from "vuex"
 import {NavBar,Toast,Image as VanImage,Tag,Switch,Checkbox,Button,Notify } from "vant"
 export default {
   name:"Submit",
@@ -128,7 +122,6 @@ export default {
       checkbox:true,
       zhiPay:true,
       wechatPay:false,
-      totalM:6899
     }
   },
   watch:{
@@ -139,6 +132,9 @@ export default {
       this.zhiPay = !value
     }
   },
+  computed:{
+    ...mapState(["detailpage"])
+  },
   methods: {
     onClickLeft(){
       this.$router.back()
@@ -146,6 +142,9 @@ export default {
     submit(){
       Notify({ type: 'success', message: '发现内鬼,出货失败!' });
     }
+  },
+  mounted() {
+    console.log(this.$route.query)
   },
 }
 </script>

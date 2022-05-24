@@ -13,6 +13,7 @@
         show-set-default
         show-search-result
         :search-result="searchResult"
+        tel-maxlength=11
         :area-columns-placeholder="['请选择', '请选择', '请选择']"
         @save="onSave"
         @delete="onDelete"
@@ -25,6 +26,7 @@
 <script>
 import {NavBar,AddressEdit,Toast,Button} from "vant"
 import { areaList } from '@vant/area-data'
+import ajax from "../../api/ajax"
 export default {
   name:"AddSite",
   components:{
@@ -42,7 +44,14 @@ export default {
   methods: {
     onSave(content) {
       Toast('save');
-      console.log(content)
+      let demo= content
+      demo['address'] = content['addressDetail']
+      demo['uid'] = this.$store.state.login.res._id
+      this.$store.commit("addLocation",demo)
+      this.$store.state.login.res._id
+      ajax("/api/addlocation",demo,"POST")
+      this.$bus.$emit("close",true)
+      this.$router.back()
     },
     onDelete() {
       Toast('delete');
@@ -62,8 +71,8 @@ export default {
     back(){
       this.$bus.$emit("close",true)
       this.$router.back()
-    }
-  },
+    },
+  }
 }
 </script>
 

@@ -8,42 +8,28 @@
       </template>
     </van-nav-bar>
     <section>
-      <van-empty description="暂无收货地址" image="http://8.219.72.10:9000/img/loca.svg" v-if="list.length===0">
+      <van-empty description="暂无收货地址" image="http://8.219.72.10:9000/img/loca.svg" v-if="address.length===0">
         <van-button round type="danger" class="bottom-button" to="/person/address/addsite" @click="firstAdd">新增收货地址</van-button>
       </van-empty>
-      <!-- <div class="add" v-if="show">
-        <van-address-edit
-          :area-list="areaList"
-          show-postal
-          show-delete
-          show-set-default
-          show-search-result
-          :search-result="searchResult"
-          :area-columns-placeholder="['请选择', '请选择', '请选择']"
-          @save="onSave"
-          @delete="onDelete"
-          @change-detail="onChangeDetail"
-        />
-      </div> -->
-      <!-- <div>
+      <div v-else>
         <van-address-list
           v-model="chosenAddressId"
-          :list="list"
+          :list="address"
           default-tag-text="默认"
           @edit="onEdit"
           @add="onAdd"
         />
-      </div> -->
+      </div>
     </section>
   </main>
   <router-view></router-view>
   </div>
-  
 </template>
 
 <script>
+import ajax from "../../api/ajax"
+import {mapState} from "vuex"
 import {NavBar,Empty,Button,AddressEdit,AddressList,Toast} from "vant"
-import { areaList } from '@vant/area-data'
 export default {
   name:"Address",
   components:{
@@ -56,65 +42,35 @@ export default {
   },
   data() {
     return {
-      areaList,
-      searchResult: [],
       hidden: true,
       title:"收货地址",
-      chosenAddressId: '1',
-      show:false,
-      ceshi:false,
-      list: [],
+      chosenAddressId: 0,
       fatherHidden:true
     }
   },
+  computed:{
+    ...mapState(["address"])
+  },
   methods: {
-    // onSave(content) {
-    //   Toast('save');
-    //   localStorage.setItem("address",JSON.stringify(content))
-    //   let addobj = {name:content.name,tel:content.tel,address:content.addressDetail}
-    //   this.list.push(addobj)
-    // },
-    // onDelete() {
-    //   Toast('delete');
-    // },
-    // onChangeDetail(val) {
-    //   if (val) {
-    //     this.searchResult = [
-    //       {
-    //         name: '',
-    //         address: '',
-    //       },
-    //     ];
-    //   } else {
-    //     this.searchResult = [];
-    //   }
-    // },
-    // onAdd(){
-    //   this.show = !this.show
-    //   this.list.length = 1
-    //   this.title = "新增地址"
-    // },
-    // reset(){
-    //   this.show = !this.show
-    //   this.list.length = 0
-    //   this.title = "收货地址"
-    // },
-    // onEdit(item, index) {
-    //   Toast('编辑地址:' + index);
-    // },
     firstAdd(){
       this.fatherHidden = false
     },
-    demo(val){
-      console.log(val)
+    demo(){
       this.fatherHidden = true
+    },
+    onEdit(){
+      this.fatherHidden = false
+      this.$router.push("/person/address/addsite")
+    },
+    onAdd(){
+      this.fatherHidden = false
+      this.$router.push("/person/address/addsite")
     }
-
   },
-  mounted() {
-    console.log(localStorage.getItem("address"))
-    // this.list.push(JSON.parse(localStorage.getItem("address")))
+  async mounted() {
     this.$bus.$on("close",this.demo)
+    const result = await ajax("/api/findaddress?uid="+this.$store.state.login.res._id)
+    this.$store.commit("findLocation",result["res"])
   },
 }
 </script>

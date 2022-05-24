@@ -26,11 +26,11 @@
         <div class="info">
           <p>
             <van-tag round type="danger">自营</van-tag>
-            <span v-for="(item,index) in goodsData.title" :key="index">{{item}}</span>
+            <span v-for="(item,index) in detailpage.title" :key="index">{{item}}</span>
           </p>
           <div class="price">
             <i class="iconfont icon-renminbi1"></i>
-            <span>{{goodsData.price}}</span>
+            <span>{{detailpage.price}}</span>
           </div>
         </div>
       </div>
@@ -55,9 +55,9 @@
           <span>产品详情</span>
         </div>
         <div class="other">
-          <p class="van-hairline--bottom"><span class="number">IMEI/SN:{{goodsData['IMEI/SN']}}</span></p>
-          <p class="van-hairline--bottom"><span>质检报告:</span>{{goodsData.test}}</p>
-          <p><span>包装清单:</span>{{goodsData.other}}</p>
+          <p class="van-hairline--bottom"><span class="number">IMEI/SN:{{detailpage['IMEI/SN']}}</span></p>
+          <p class="van-hairline--bottom"><span>质检报告:</span>{{detailpage.test}}</p>
+          <p><span>包装清单:</span>{{detailpage.other}}</p>
         </div>
         <div class="photos">
           <van-image
@@ -72,14 +72,15 @@
     </section>
     <van-goods-action class="van-hairline--top">
       <van-goods-action-icon icon="chat-o" text="客服"/>
-      <van-goods-action-icon icon="cart-o" text="购物车" :badge="count" @click="$router.push('/person/shopcar?s_id=1')" />
+      <van-goods-action-icon icon="cart-o" text="购物车" :badge="totalNum" @click="$router.push('/person/shopcar?s_id=1')" />
       <van-goods-action-button type="warning" text="加入购物车" @click="addCar" :disabled="disabled" />
-      <van-goods-action-button type="danger" text="立即购买" to="/submit" />
+      <van-goods-action-button type="danger" text="立即购买" @click="buyNow(detailpage['_id'])"/>
     </van-goods-action>
   </main>
 </template>
 
 <script>
+import {mapGetters,mapState} from "vuex"
 import {NavBar,ShareSheet,Toast,Image as VanImage,Tag,GoodsAction, GoodsActionIcon, GoodsActionButton} from "vant"
 export default {
   name:"DetailPage",
@@ -103,9 +104,7 @@ export default {
         { name: '分享海报', icon: 'poster' },
         { name: '二维码', icon: 'qrcode' },
       ],
-      count: 0,
       disabled: false,
-      goodsData: ''
     }
   },
   watch:{
@@ -117,26 +116,32 @@ export default {
       }
     }
   },
+  computed:{
+    ...mapGetters(["totalNum"]),
+    ...mapState(["detailpage","shopcar"]),
+
+  },
   methods:{
     onSelect(option) {
       Toast(option.name);
       this.showShare = false;
     },
     addCar(){
-      this.count += 1
       this.disabled = true
+      console.log(this.goodsData)
+      this.$store.dispatch("addcar",this.detailpage)
+    },
+    buyNow(val){
+      this.$router.push(`/submit?_id=${val}`)
     }
   },
   mounted(){
-    // this.$bus.$off("sendData").$on("sendData",(data)=>{
-    //   this.goodsData = data
-    // })
-    this.goodsData = this.$store.state.goodsdata
-    console.log(this.$store.state.goodsdata)
-  },
-  // beforeDestroy(){
-  //   this.$bus.$off("sendData")
-  // }
+    this.shopcar.forEach((ele)=>{
+      if(ele["_id"]===this.detailpage["_id"]){
+        this.disabled = true
+      }
+    })
+  }
 }
 </script>
 

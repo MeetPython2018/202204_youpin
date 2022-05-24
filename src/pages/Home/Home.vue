@@ -24,12 +24,18 @@
 </template>
 
 <script>
+import {Tab,Tabs} from 'vant';
 import {mapState} from 'vuex'
 import Recommend from "../Home/Recommend.vue"
 import Product from "../Home/Product.vue"
 export default {
   name:"Home",
-  components:{Recommend,Product},
+  components:{
+    [Tabs.name]:Tabs,
+    [Tab.name]:Tab,
+    Recommend,
+    Product
+  },
   data() {
     return {
       active:0,

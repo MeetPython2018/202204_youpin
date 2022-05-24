@@ -9,14 +9,14 @@
       class="custom-image"
       image="https://img01.yzcdn.cn/vant/custom-empty-image.png"
       description="这里都落灰了..."
-      v-if="carEmpty"
+      v-if="shopcar.length===0"
     >
     <van-button type="primary" to="/home">去首页逛逛</van-button>
     </van-empty>
     <section>
       <van-checkbox-group v-model="result" ref="checkboxGroup">
-        <div class="shopmincard">
-          <van-checkbox name="3899"></van-checkbox>
+        <div class="shopmincard" v-for="(items,index) in shopcar" :key="index">
+          <van-checkbox :name="items.price"></van-checkbox>
           <div class="img-box">
             <van-image
               width="100%"
@@ -26,53 +26,20 @@
           </div>
           <div class="info">
             <p class="title van-multi-ellipsis--l3">
-              <span>90新</span>
-              <span>iPhone 13</span>
-              <span>远峰蓝</span>
-              <span>128G</span>
-              <span>国行</span>
-              <span>90%电池</span>
-              <span>带包装配件</span>
+              <span v-for="(item,index) in items.title" :key="index">{{item}}</span>
             </p>
             <p class="price">
               <i class="iconfont icon-renminbi1"></i>
-              <span>3899</span>
+              <span>{{items.price}}</span>
             </p>
           </div>
-          <i class="iconfont icon-guanbi"></i>
-        </div>
-        <div class="shopmincard">
-          <van-checkbox name="7899"></van-checkbox>
-          <div class="img-box">
-            <van-image
-              width="100%"
-              height="70"
-              src=""
-            />
-          </div>
-          <div class="info">
-            <p class="title van-multi-ellipsis--l3">
-              <span>95新</span>
-              <span>iPhone 13 Pro</span>
-              <span>远峰蓝</span>
-              <span>256G</span>
-              <span>国行</span>
-              <span>100%电池138次充电</span>
-              <span>带包装配件</span>
-              <span>官方保修到2022年10月9号</span>
-            </p>
-            <p class="price">
-              <i class="iconfont icon-renminbi1"></i>
-              <span>7899</span>
-            </p>
-          </div>
-          <i class="iconfont icon-guanbi"></i>
+          <i class="iconfont icon-guanbi" @click="onDelete(items['_id'])"></i>
         </div>
       </van-checkbox-group> 
     </section>
     <van-submit-bar :price="totalMoney" button-text="埋单" button-color="#ee0a24" class="van-hairline--top" @submit="onSubmit">
       <van-checkbox v-model="resultC"></van-checkbox>
-      <span @click="toggleAll" style="margin-left:8px">全选</span>
+      <span style="margin-left:8px" @click="checkAll">全选</span>
       <template #tip>
         已选<span>{{result.length}}</span>件商品
       </template>
@@ -81,6 +48,7 @@
 </template>
 
 <script>
+import {mapGetters,mapState} from "vuex"
 import {NavBar,Empty,Button,SubmitBar,Checkbox,CheckboxGroup,Toast,Image as VanImage,Tag} from "vant"
 export default {
   name:"ShopCar",
@@ -97,25 +65,18 @@ export default {
   },
   data() {
     return {
-      carEmpty:true,
       result:[],
-      totalMoney:0
+      totalMoney:0,
     }
   },
   watch:{
     result(value){
+      console.log(value)
       if(value.length>0){
         this.totalMoney = value.map(x=>x*1).reduce((x,y)=>x+y)*100;
       }else{
         this.totalMoney = 0
       }
-    },
-    resultC:{
-      deep:true,
-      immediate:true,
-      handler(){
-        this.resultC = false
-      } 
     }
   },
   computed:{
@@ -127,21 +88,22 @@ export default {
         console.log(value)
       }
     },
+    ...mapState(["shopcar"])
   },
   methods: {
     onSubmit(){
-      Toast("呵呵")
+      Toast.success("账是记在那的,一旦收到款,立马发货.")
     },
-    checkA(){
-      this.$refs.checkboxGroup.toggleAll(true);
+    checkAll(){
+      this.$refs.checkboxGroup.toggleAll()
     },
-    toggleAll() {
-      this.$refs.checkboxGroup.toggleAll();
-    },
-  },
-  mounted() {
-    if(this.$route.query.s_id){
-      this.carEmpty = false
+    onDelete(val){
+      const res = this.shopcar.filter((ele)=>{
+        if(ele["_id"]!==val){
+          return true
+        }
+      })
+      this.$store.commit("updataCar",res)
     }
   },
 }

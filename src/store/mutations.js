@@ -11,7 +11,22 @@ export default {
   [RECEIVE_CATEGORY] (state,categorys){
     state.categorys = categorys
   },
-  PullData(state,value){
-    state.goodsdata = value
+  cacheDetail(state,value){
+    state.detailpage = value
+  },
+  setLogin(state,value){
+    state.login = value
+  },
+  addCar(state,value){
+    state.shopcar.push(value)
+  },
+  updataCar(state,value){
+    state.shopcar = value
+  },
+  addLocation(state,value){
+    state.address.push(value)
+  },
+  findLocation(state,value){
+    state.address = value
   }
 }

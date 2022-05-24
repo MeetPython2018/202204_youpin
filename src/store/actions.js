@@ -13,7 +13,13 @@ export default {
   async getCategory({commit}){
     commit(RECEIVE_CATEGORY,await reqCategory())  // 获取业务线分类
   },
-  pulldata(context,value){
-    context.commit('PullData',value)
+  cachedetail(context,value){
+    context.commit('cacheDetail',value)
+  },
+  setlogin({commit},value){
+    commit("setlogin",value)
+  },
+  addcar({commit},value){
+    commit("addCar",value)
   }
 }

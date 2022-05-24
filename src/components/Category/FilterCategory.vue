@@ -51,11 +51,7 @@ export default {
       value:'',
       value1: 0,
       value2: 0,
-      option2: [
-        // { text: '全部宝贝', value: 'a' },
-        // { text: '壳膜', value: 'b' },
-        // { text: '苹果', value: 'c' },
-      ],
+      option2: []
     }
   },
   computed:{

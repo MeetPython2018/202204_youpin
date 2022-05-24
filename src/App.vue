@@ -14,11 +14,12 @@
 </template>
 
 <script>
-
+import {Tabbar,TabbarItem} from 'vant'
 export default {
   name: 'App',
   components: {
-    
+    [Tabbar.name]:Tabbar,
+    [TabbarItem.name]:TabbarItem
   },
   data() {
     return {
@@ -26,14 +27,12 @@ export default {
     }
   },
   created(){
-    if(window.localStorage.getItem("demodata")){
-      this.$store.commit("receive_category",JSON.parse(window.localStorage.getItem("aliveCategory")))
-      this.$store.commit("PullData",JSON.parse(window.localStorage.getItem("aliveDetail")))
-    }
+    this.$store.commit("receive_category",JSON.parse(window.localStorage.getItem("aliveCategory")))
+    this.$store.commit("cacheDetail",JSON.parse(window.localStorage.getItem("aliveDetail")))
+    this.$store.commit("setLogin",JSON.parse(localStorage.getItem("login")))
     window.addEventListener("beforeunload",()=>{
       window.localStorage.setItem("aliveCategory",JSON.stringify(this.$store.state.categorys))
-      window.localStorage.setItem("aliveDetail",JSON.stringify(this.$store.state.goodsdata))
-      
+      window.localStorage.setItem("aliveDetail",JSON.stringify(this.$store.state.detailpage))
     })
   },
   mounted(){
