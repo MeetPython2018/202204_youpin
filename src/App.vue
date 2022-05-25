@@ -29,7 +29,7 @@ export default {
   created(){
     this.$store.commit("receive_category",JSON.parse(window.localStorage.getItem("aliveCategory")))
     this.$store.commit("cacheDetail",JSON.parse(window.localStorage.getItem("aliveDetail")))
-    this.$store.commit("setLogin",JSON.parse(localStorage.getItem("login")))
+    // this.$store.commit("setLogin",JSON.parse(localStorage.getItem("login")))
     window.addEventListener("beforeunload",()=>{
       window.localStorage.setItem("aliveCategory",JSON.stringify(this.$store.state.categorys))
       window.localStorage.setItem("aliveDetail",JSON.stringify(this.$store.state.detailpage))

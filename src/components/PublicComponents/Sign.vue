@@ -18,17 +18,11 @@
         <div v-if="signWay">
           <van-field v-model="tel" label-width="64" type="tel" label="手机号" 
           required
-          placeholder="请输入手机号"
+          placeholder="输入手机号"
           maxlength="11"
           clearable
           @input="inputCheck"
           />
-          <div class="slide" v-show="isSlideShow">
-            <drag-verify ref="dragVerify" :width="360" text="请按住滑块拖动" message="" :isPassing.sync="isPassing" 
-              handlerIcon="iconfont icon-jiantou_xiangyouliangci_o" successIcon="iconfont icon-wancheng" @passcallback="disableSend = false" successText="人机通过"
-              >
-            </drag-verify>  
-          </div>
           <van-field
             v-model="sms"
             type="number"
@@ -38,12 +32,11 @@
             clearable
             required
             label="验证码"
-            placeholder="请输入短信验证码"
+            placeholder="短信验证码"
             >
             <template #button>
-              <van-button size="small" type="primary" :disabled="disableSend" @click="sendCode($event)">
-                {{info}}
-                <van-count-down :time="time" format="ss" ref="countDown" :auto-start="false" @finish="finish" v-show="send"/>
+              <van-button size="small" type="primary" :disabled="disableSend" @click.prevent="sendCode($event)">
+                {{!sending ? '获取验证码':`已发送:${computedTime}秒`}}
               </van-button>
             </template>
           </van-field>
@@ -51,23 +44,41 @@
         <div v-else>
           <van-field v-model="email" label-width="40" type="text" label="邮箱" 
             required
-            placeholder="输入邮箱地址"
+            placeholder="邮箱地址"
             maxlength="30"
             clearable
             @blur="checkEmail"
             />
-          <van-field v-model="password" label-width="40" type="password" label="密码" 
+          <van-field v-model="password" label-width="40" :type="checked ? 'text':'password'" label="密码" 
             required
-            placeholder="设置密码（大于6位且包含数字和字母）"
+            placeholder="设置密码(大于6位且包含数字和字母)"
             maxlength="20"
             clearable
             @blur="checkPassword"
+          >
+            <template #extra>
+              <van-switch v-model="checked" size="18px" active-color="#07c160" inactive-color="#dcdee0"/>
+            </template>
+          </van-field>
+          <van-field v-model="captcha" label-width="60" type="text" label="验证码" 
+            required
+            placeholder="图形验证码"
+            maxlength="4"
+            clearable
+            @blur="checkPassword"
             />
-          <p class="forget">登录即注册，如忘记密码，<span style="color:red">点此处找回密码</span></p>
         </div>
-        <div style="margin: 32px 0;">
-          <van-button round block type="primary" native-type="submit">立即登录</van-button>
+        <div class="tips">
+          <p>
+            温馨提示: 未注册有品的手机号，登录时将自动注册，且代表已同意
+            《<a href="javaScript:;">用户服务协议</a>》
+            <a href="javaScript:;" class="forget">找回密码</a>
+          </p>
         </div>
+        <div class="subBtn">
+          <van-button block type="primary" native-type="submit" square :loading="isSubmit" loading-text="登录中...">立即登录</van-button>
+        </div>
+        <div class="aboutUs"><span>关于我们</span></div>
       </van-form>
     </section>
   </main>
@@ -75,7 +86,8 @@
 
 <script>
 import ajax from "../../api/ajax"
-import {NavBar,Form,Field,Button,CountDown,Toast} from "vant"
+import {Login} from "@/api"
+import {NavBar,Form,Field,Button,CountDown,Toast,Switch} from "vant"
 export default {
   name:"Sign",
   components:{
@@ -84,33 +96,41 @@ export default {
     [Field.name]:Field,
     [Button.name]:Button,
     [CountDown.name]:CountDown,
-    [Toast.name]:Toast
+    [Toast.name]:Toast,
+    [Switch.name]:Switch
   },
   data() {
     return {
-      signWay:true,   //  登录方式
-      tel:'',   // 保存手机号
-      sms:'',   // 保存验证码
-      isPassing: false,    // 人机滑动是否通过
-      isSlideShow: false,     // 滑动检测是否出现
-      disableSend: true,     // 发送验证码的按钮是否可用
-      send: false,       // 是否已经发送了验证码
-      pattern: /\d{6}/,   // 验证码的正则
-      time: 90*1000,    // 倒计时
+      signWay: false,            //  登录方式
+      tel:'',                  // 保存手机号
+      sms:'',                 // 保存验证码
+      disableSend: true,      // 发送验证码的按钮是否可用
+      sending: false,         // 是否已经发送了验证码
+      isSubmit: false,
+      pattern: /\d{6}/,       // 验证码的正则
       info:"发送验证码",
+      computedTime: 60,  // 倒计时
+      email:'',
       password:'',
-      email:''
+      checked:false,
+      captcha:''  // 图形验证码
     }
   },
   computed:{
     submited(){
       return true
     },
+    regPhone(){
+      return /^1(3\d|4[5-9]|5[0-35-9]|6[567]|7[0-8]|8\d|9[0-35-9])\d{8}$/.test(this.tel)
+    },
+    regSms(){
+      return /^\d{6}/.test(this.sms)
+    },
     regEmail(){
       return /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(this.email)
     },
     regPassword(){
-      return /\d{3,}[A-z]{3,}/.test(this.password)
+      return /\d{3,}[A-z]{3,}|[A-z]{3,}\d{3,}/.test(this.password)
     }
   },
   methods:{
@@ -119,50 +139,58 @@ export default {
     },
     inputCheck(val){  // 手机号输入时验证
       if(val.length===11 && /^1(3\d|4[5-9]|5[0-35-9]|6[567]|7[0-8]|8\d|9[0-35-9])\d{8}$/.test(val)){
-        this.isSlideShow = true
+        this.disableSend = this.sending ? true:false
       }else{
-        this.isPassing = false
-        this.$refs.dragVerify.reset()
-        this.isSlideShow = false
         this.disableSend = true
       }
     },
-    sendCode(e){  // 点击发送验证码
+    sendCode(){  // 点击发送验证码
       this.disableSend = true
-      this.send = true
-      this.info = "重新发送"
-      this.$refs.countDown.start()
-      e.preventDefault();
-    },
-    finish(){
-      this.send = false
-      this.info = "发送验证码"
-      this.$refs.countDown.reset()
-      this.disableSend = false
-    },
-    reset(){
-      this.isPassing = true,
-      this.$refs.dragVerify.reset()
+      this.sending = true
+      const intervalId = setInterval(()=>{
+        this.computedTime--
+        if(this.computedTime<=0){
+          clearInterval(intervalId)
+          this.computedTime = 60
+          this.sending = false
+          this.disableSend = false
+        }
+      },1000)
     },
     async onSubmit(){
       if(this.signWay){
-        if(this.validator && /\d{6}/.test(this.sms)){
-          Toast.success("手机号和验证码都已填写,可以向服务器发送请求！")
-          const res = await ajax("/api/sign",{username:this.tel,password:this.sms},"POST")
-          // console.log(res)
-          this.$store.commit("setLogin",res)
-          localStorage.setItem("login",JSON.stringify(res))
-          if(res.code===1){
-            this.$router.replace("/")
-          }
+        if(!this.regPhone){
+          Toast.fail("手机号格式不正确")
+        }else if(!this.regSms){
+          Toast.fail("验证码格式不正确")
         }else{
-          Toast.fail("手机号和验证码格式不正确")
-          return false
+          this.isSubmit = true
+          // const res = await ajax("/api/api/sign",{username:this.tel,password:this.sms},"POST")
+          // this.$store.commit("setLogin",res)
+          // localStorage.setItem("login",JSON.stringify(res))
+          // if(res.code===1){
+            this.$router.replace("/")
+          // }
         }
       }else{
-        if(this.regEmail){
-          Toast.success("邮箱和验证码都已填写,可以向服务器发送请求！")
+        if(!this.regEmail){
+          Toast.fail("邮箱格式不正确")
+        }else if(!this.regPassword){
+          Toast.fail("密码不符合要求")
+          this.checked = true
+        }else if(!/^\w{4}$/.test(this.captcha)){
+          Toast.fail("验证码不符合要求")
         }else{
+          this.isSubmit = true
+          const res = await Login({username:this.email,password:this.password})
+          this.$store.commit("setLogin",res)
+          localStorage.setItem("cookie",res.token)
+          if(res.code===1){
+            this.$router.replace("/")
+          }else{
+            this.isSubmit = false
+            Toast.fail(res.msg)
+          }
         }
       }
     },
@@ -170,10 +198,8 @@ export default {
     checkEmail(){
       this.email = this.email.replace(/(^\s*)|(\s*$)/g,'')
       if(this.email){
-        if(this.regEmail && this.email.length){
-          Toast("邮箱格式正确，是否可用需请求服务器")
-        }else{
-          Toast("邮箱格式不正确，请检查后继续")
+        if(!this.regEmail){
+          Toast.fail("邮箱格式有误")
         }
       }
     },
@@ -197,43 +223,39 @@ export default {
       padding: 0 12px;
       margin-top: 32px;
       .logo{
-        font-size: 38px;
+        width: 64%;
+        margin: 0 auto;
+        font-size: 32px;
         display: flex;
         justify-content: center;
         align-items: center;
         font-family: "macfont";
         span{
-          opacity: .64;
+          opacity: .54;
         }
         img{
-          width: 64px;
+          width: 54px;
         }
       }
       .signType{
-        padding: 16px 8px;
+        width: 64%;
+        margin: 16px auto;
         font-size: 16px;
         display: flex;
-        justify-content: center;
-        span:last-child{
-          margin-left: 8px;
+        justify-content: space-evenly;
+        .on{
+          color: @success;
+          position: relative;
+          &:after{
+            content: "";
+            width: 100%;
+            height: 2px;
+            background-color: @success;
+            position: absolute;
+            left: 0;
+            bottom: -3px;
+          }
         }
-      }
-      .on{
-        color: @success;
-        position: relative;
-        &:after{
-          content: "";
-          width: 100%;
-          height: 2px;
-          background-color: @success;
-          position: absolute;
-          left: 0;
-          bottom: 0;
-        }
-      }
-      .forget{
-        padding: 10px 18px;
-        margin: 0;
       }
       .slide{
         width: 100%;
@@ -244,16 +266,48 @@ export default {
         padding: 0 8px;
         box-sizing: border-box;
       }
-      .van-button__text{
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        .van-count-down{
-          margin-left: 2px;
-          color: #fff;
-          &:before{
-            content: ":";
+      .van-form{
+        .van-cell{
+          margin-bottom: 8px;
+        }
+        .van-switch{
+          position: relative;
+          right: -5px;
+          top: 0;
+          bottom: 0;
+          margin: auto 0;
+        }
+        .tips{
+          p{
+            opacity: .64;
+            line-height: 1.5;
+            margin: 0;
+            font-size: 14px;
+            a{
+              color: @success;
+              text-decoration: underline;
+              padding: 0 2px;
+              &.forget{
+                color: @red;
+                margin-left: 8px;
+              }
+            }
           }
+        }
+        .subBtn{
+          margin: 16px auto 8px;
+          display: flex;
+          justify-content: space-between;
+          .van-button{
+            font-size: 16px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+          }
+        }
+        .aboutUs{
+          font-size: 14px;
+          text-align: center;
+          opacity: .64;
         }
       }
     }

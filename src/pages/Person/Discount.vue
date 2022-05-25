@@ -55,7 +55,7 @@
 
 <script>
 
-import { format, render, cancel, register } from 'timeago.js';
+// import { format, render, cancel, register } from 'timeago.js';
 import dayjs from "dayjs"
 import {NavBar,Empty,CouponList,Tab,Tabs,Button,SubmitBar,Checkbox,CheckboxGroup,Toast,Image as VanImage,Tag} from "vant"
 export default {
@@ -69,8 +69,7 @@ export default {
     [Checkbox.name]:Checkbox,
     [CheckboxGroup.name]:CheckboxGroup,
     [Toast.name]:Toast,
-    [VanImage.name]:VanImage,
-    format
+    [VanImage.name]:VanImage
   },
   data() {
     return {

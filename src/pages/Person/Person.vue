@@ -9,8 +9,9 @@
         height="60"
         src="http://8.219.72.10:9000/img/user.png"
       />
-      <span @click="$router.push('/sign')" v-if="login.code===0">点击登录/注册</span>
-      <span v-else>{{login.res.username}}</span>
+      <span @click="$router.push('/sign')" v-if="1">点击登录/注册</span>
+      <!-- <span @click="$router.push('/sign')" v-if="login.code===0">点击登录/注册</span>
+      <span v-else>{{login.res.username}}</span> -->
       </div>
       <div class="serve">
         <van-cell-group inset>
@@ -42,7 +43,7 @@ export default {
     [CellGroup.name]:CellGroup,
   },
   computed:{
-    ...mapState(["login"])
+    // ...mapState(["login"])
   }
 }
 </script>

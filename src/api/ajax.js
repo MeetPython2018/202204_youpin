@@ -1,5 +1,14 @@
 import axios from "axios"
 
+//请求拦截器
+// axios.instance.interceptors.request.use(    
+//   config => {        
+//       const token = store.state.token;
+//       token && (config.headers.Authorization = 'Bearer ' + token);        
+//       return config;    
+//   },    
+//   error => Promise.error(error)
+// )
 export default function ajax(url,data={},type="GET"){
   return new Promise((resolve,reject)=>{
     // 执行异步ajax请求
