@@ -1,6 +1,8 @@
 <template>
   <div id="ln">
-    <router-view></router-view>
+    <keep-alive include="Home">
+      <router-view></router-view>
+    </keep-alive>
     <footer v-if="!$route.meta.hidenfooter">
       <van-tabbar v-model="active" active-color="#ee0a24" inactive-color="#000" :placeholder="false" :route="true">
         <van-tabbar-item icon="home-o" to="/home">首页</van-tabbar-item>
@@ -29,7 +31,6 @@ export default {
   created(){
     this.$store.commit("receive_category",JSON.parse(window.localStorage.getItem("aliveCategory")))
     this.$store.commit("cacheDetail",JSON.parse(window.localStorage.getItem("aliveDetail")))
-    // this.$store.commit("setLogin",JSON.parse(localStorage.getItem("login")))
     window.addEventListener("beforeunload",()=>{
       window.localStorage.setItem("aliveCategory",JSON.stringify(this.$store.state.categorys))
       window.localStorage.setItem("aliveDetail",JSON.stringify(this.$store.state.detailpage))

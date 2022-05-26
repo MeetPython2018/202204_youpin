@@ -1,7 +1,8 @@
 /* 直接更新state的多个方法的对象 */
 import {
   RECEIVE_RECOMMENDGOODS,
-  RECEIVE_CATEGORY
+  RECEIVE_CATEGORY,
+  RECEIVE_USERINFO
 } from "./mutation-types"
 
 export default {
@@ -10,6 +11,9 @@ export default {
   },
   [RECEIVE_CATEGORY] (state,categorys){
     state.categorys = categorys
+  },
+  [RECEIVE_USERINFO] (state,userinfo){
+    state.userinfo = userinfo
   },
   cacheDetail(state,value){
     state.detailpage = value

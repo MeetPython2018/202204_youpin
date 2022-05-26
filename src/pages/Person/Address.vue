@@ -8,7 +8,7 @@
       </template>
     </van-nav-bar>
     <section>
-      <van-empty description="暂无收货地址" image="http://8.219.72.10:9000/img/loca.svg" v-if="address.length===0">
+      <van-empty description="暂无收货地址" image="https://img01.yzcdn.cn/vant/custom-empty-image.png" v-if="address.length===0">
         <van-button round type="danger" class="bottom-button" to="/person/address/addsite" @click="firstAdd">新增收货地址</van-button>
       </van-empty>
       <div v-else>
@@ -69,7 +69,8 @@ export default {
   },
   async mounted() {
     this.$bus.$on("close",this.demo)
-    const result = await ajax("/api/findaddress?uid="+this.$store.state.login.res._id)
+    // console.log(this.$store.state.userinfo)
+    const result = await ajax("http://8.219.72.10:9000/findaddress?uid=" + this.$store.state.userinfo.data._id)
     this.$store.commit("findLocation",result["res"])
   },
 }

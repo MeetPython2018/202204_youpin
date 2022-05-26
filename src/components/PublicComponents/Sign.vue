@@ -184,9 +184,8 @@ export default {
           this.isSubmit = true
           const res = await Login({username:this.email,password:this.password})
           this.$store.commit("setLogin",res)
-          localStorage.setItem("cookie",res.token)
           if(res.code===1){
-            this.$router.replace("/")
+            this.$router.replace("/person")
           }else{
             this.isSubmit = false
             Toast.fail(res.msg)

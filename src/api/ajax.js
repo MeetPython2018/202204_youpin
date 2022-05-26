@@ -1,5 +1,5 @@
 import axios from "axios"
-
+axios.defaults.withCredentials = true
 //请求拦截器
 // axios.instance.interceptors.request.use(    
 //   config => {        

@@ -2,8 +2,8 @@
   <main>
     <div class="swipe-wrap">
       <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white" @change="onChange">
-        <van-swipe-item v-for="value in 4" :key="value">
-          <van-image src="" radius="8" width="100%" height="150">
+        <van-swipe-item v-for="(item,index) in bannerImageUrl" :key="index">
+          <van-image :src="item" radius="8" width="100%">
              <template v-slot:loading>
               <van-loading type="spinner" size="20" /> 
              </template> 
@@ -84,7 +84,7 @@
       </ul>
     </div>
     <div class="ad">
-      <van-image src="" radius="8" width="100%" height="110">
+      <van-image src="http://8.219.72.10:9000/siteimg/home/628b3ee7e4b04c32de5ee430.png" radius="8" width="100%" height="100%">
         <template v-slot:loading>
           <van-loading type="spinner" size="20" />
         </template>
@@ -107,7 +107,7 @@
         <van-col span="11">
           <ul>
             <li v-for="(item,index) in recommends.slice(5)" :key="index">
-              <GoodsCard :asyncData="item">
+              <GoodsCard :asyncData="item" @click.native="onSend(item)">
                 <span class="more">看相似</span>
               </GoodsCard>
             </li>
@@ -117,6 +117,7 @@
     </div>
   </main>
 </template>
+
 <script>
 import { Col, Row,Swipe, SwipeItem, Image as VanImage ,Loading,Tag,Step, Steps  } from 'vant';
 import GoodsCard from "../../components/PublicComponents/GoodsCard.vue"
@@ -138,6 +139,12 @@ export default {
   data() {
     return {
       current: 0,
+      bannerImageUrl:[
+        "http://8.219.72.10:9000/siteimg/home/628b66a5e4b04c32de5ee442.jpg",
+        "http://8.219.72.10:9000/siteimg/home/628de78be4b04c32de5ee661.jpg",
+        "http://8.219.72.10:9000/siteimg/home/6256916ae4b04c32de5ec712.jpg",
+        "http://8.219.72.10:9000/siteimg/home/625f8150e4b04c32de5ecbdc.jpg",
+      ]
     }
   },
   computed:{
@@ -252,6 +259,7 @@ export default {
       margin-bottom: 16px;
     }
     .newgoods{
+      padding-bottom: 48px;
       .van-row{
         width: 100%;
         .van-col{

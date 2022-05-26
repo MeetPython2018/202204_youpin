@@ -43,8 +43,6 @@ export default {
   },
   computed:{
     ...mapState(["categorys","recommends"])
-  },
-  mounted() {
   }
 }
 </script>

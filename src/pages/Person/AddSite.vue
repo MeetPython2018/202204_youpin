@@ -46,10 +46,9 @@ export default {
       Toast('save');
       let demo= content
       demo['address'] = content['addressDetail']
-      demo['uid'] = this.$store.state.login.res._id
+      demo['uid'] = this.$store.state.userinfo.data._id
       this.$store.commit("addLocation",demo)
-      this.$store.state.login.res._id
-      ajax("/api/addlocation",demo,"POST")
+      ajax("http://8.219.72.10:9000/addlocation",demo,"POST")
       this.$bus.$emit("close",true)
       this.$router.back()
     },

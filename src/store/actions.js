@@ -2,16 +2,20 @@
 
 import {
   RECEIVE_RECOMMENDGOODS,
-  RECEIVE_CATEGORY
+  RECEIVE_CATEGORY,
+  RECEIVE_USERINFO
 } from "./mutation-types"
 
-import { reqRecommedGoods,reqCategory } from "@/api"
+import { reqRecommedGoods,reqCategory,autoLogin } from "@/api"
 export default {
   async getCommendGoods({commit}){
     commit(RECEIVE_RECOMMENDGOODS,await reqRecommedGoods())   // 获取首屏物品数据
   },
   async getCategory({commit}){
     commit(RECEIVE_CATEGORY,await reqCategory())  // 获取业务线分类
+  },
+  async getUserInfo({commit}){
+    commit(RECEIVE_USERINFO,await autoLogin())
   },
   cachedetail(context,value){
     context.commit('cacheDetail',value)

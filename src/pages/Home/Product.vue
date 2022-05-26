@@ -58,6 +58,15 @@ export default {
   },
   computed:{
     ...mapState(["recommends"])
+  },
+  methods:{
+    onSend(val){
+      this.$router.push('/detailpage')
+      this.$store.commit("cacheDetail",val)
+      this.$nextTick(()=>{
+        this.$bus.$emit("sendData",val)
+      })
+    }
   }
 }
 </script>

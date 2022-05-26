@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="icon">
-      <van-image src="" width="100%" height="110" radius="8">
+      <van-image :src="data.photo[0]" width="110" height="110" radius="8">
         <template v-slot:loading>
           <van-loading type="spinner" size="20" />
         </template>
@@ -21,7 +21,7 @@
   </div>
 </template>
 <script>
-import { Image as VanImage,Loading,Tag } from 'vant';
+import { Image as VanImage,Loading,Tag } from 'vant'
 export default {
   props:["asyncData"],
   data() {

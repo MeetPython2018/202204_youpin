@@ -3,15 +3,14 @@
     <van-nav-bar title="个人中心" :fixed="true" class="van-hairline--bottom"/>
     <section>
       <div class="userinfo">
-      <van-image
-        round
-        width="60"
-        height="60"
-        src="http://8.219.72.10:9000/img/user.png"
-      />
-      <span @click="$router.push('/sign')" v-if="1">点击登录/注册</span>
-      <!-- <span @click="$router.push('/sign')" v-if="login.code===0">点击登录/注册</span>
-      <span v-else>{{login.res.username}}</span> -->
+        <van-image
+          round
+          width="60"
+          height="60"
+          src="http://8.219.72.10:9000/img/user.png"
+        />
+        <span @click="$router.push('/sign')" v-if="userinfo.code===0">点击登录/注册</span>
+        <span v-if="userinfo.data">{{userinfo.data['username']}}</span>
       </div>
       <div class="serve">
         <van-cell-group inset>
@@ -33,7 +32,7 @@
 
 <script>
 import {mapState} from "vuex"
-import { NavBar,Image as VanImage,Cell, CellGroup} from 'vant';
+import { NavBar,Image as VanImage,Cell, CellGroup} from 'vant'
 export default {
   name:"Person",
   components:{
@@ -42,8 +41,23 @@ export default {
     [Cell.name]:Cell,
     [CellGroup.name]:CellGroup,
   },
+  data() {
+    return {
+      demo:''
+    }
+  },
+  watch:{
+    userinfo(){
+      this.$nextTick(()=>{
+        this.demo = this.userinfo
+      })
+    }
+  },
   computed:{
-    // ...mapState(["login"])
+    ...mapState(["userinfo"])
+  },
+  mounted(){
+    this.$store.dispatch('getUserInfo')
   }
 }
 </script>
@@ -62,6 +76,8 @@ main{
       width: 100%;
       padding: 20px 0;
       background-color: #fff;
+      font-family: "macfont";
+      font-size: 18px;
       margin-top: 60px;
       display: flex;
       flex-direction: column;
