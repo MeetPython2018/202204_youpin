@@ -8,5 +8,6 @@ export default {
   login:{},     // 登录状态管理
   shopcar:[],  //  购物车管理
   address:[],  // 收货地址管理
-  userinfo:{}
+  updateIP: false,
+  userinfo:{},
 }

@@ -5,7 +5,12 @@
         <i class="iconfont icon-fanhui" @click="$router.back()"></i>
       </template>
     </van-nav-bar>
-    <section>
+    <div v-if="!userinfo.code">
+      <van-empty description="登录后查看优惠券情况！">
+        <van-button round type="danger" class="bottom-button" to="/sign">转去登录</van-button>
+      </van-empty>
+    </div>
+    <section v-else>
       <van-tabs v-model="active" sticky swipe-threshold='6'>
         <van-tab title="未使用">
             <div class="card">
@@ -54,10 +59,9 @@
 </template>
 
 <script>
-
-// import { format, render, cancel, register } from 'timeago.js';
+import {mapState} from "vuex"
 import dayjs from "dayjs"
-import {NavBar,Empty,CouponList,Tab,Tabs,Button,SubmitBar,Checkbox,CheckboxGroup,Toast,Image as VanImage,Tag} from "vant"
+import {NavBar,Empty,Tab,Tabs,Button,Checkbox,CheckboxGroup} from "vant"
 export default {
   name:"Discount",
   components:{
@@ -68,19 +72,17 @@ export default {
     [Button.name]:Button,
     [Checkbox.name]:Checkbox,
     [CheckboxGroup.name]:CheckboxGroup,
-    [Toast.name]:Toast,
-    [VanImage.name]:VanImage
   },
   data() {
     return {
       active:0,
-      t1:dayjs(Date.now()).format('YYYY-MM-DD HH:mm'),
-      t2:dayjs(Date.now()+604800000).format('YYYY-MM-DD HH:mm')
+      t1:dayjs(Date.now()).format('YY-MM-DD HH:mm'),
+      t2:dayjs(Date.now()+604800000).format('YY-MM-DD HH:mm')
     }
   },
-  methods: {
-
-  },
+  computed:{
+    ...mapState(["userinfo"])
+  }
 }
 </script>
 
@@ -99,31 +101,32 @@ export default {
       }
       .card{
         width: 100%;
-        height: 120px;
+        height: 100px;
         background-color: #fff;
         border-radius: 8px;
         margin: 16px auto;
         display: flex;
-        border: 2px solid @red;
+        border: 1px solid rgba(255, 0, 0, 36%);
         position: relative;
         overflow: hidden;
         >div:first-child{
-          flex: 0 0 24%;
-          font-size: 30px;
+          flex: 0 0 18%;
+          font-size: 28px;
           display: flex;
           justify-content: center;
           align-items: center;
           color: @red;
           font-family: "macfont";
           position: relative;
+          padding: 0 8px;
           i{
-            font-size: 28px;
+            font-size: 26px;
           }
           &::after{
             content: "";
             width: 0;
             height: 99%;
-            border: 1px dashed @red;
+            border: 1px dashed rgba(255, 0, 0, 64%);
             position: absolute;
             right: 0;
           }
@@ -140,6 +143,9 @@ export default {
           p{
             margin: 0;
           }
+          p:first-child{
+            font-family: "苹方";
+          }
           .time{
             font-size: 13px;
             color: #888;
@@ -148,14 +154,14 @@ export default {
         }
         .tag{
           position: absolute;
-          right: -18px;
-          bottom: -20px;
-          width: 76px;
-          height: 76px;
+          right: -17px;
+          bottom: -19px;
+          width: 74px;
+          height: 74px;
           border-radius: 50%;
-          border: 2px solid red;
+          border: 2px solid rgba(255, 0, 0, 89%);
           text-align: center;
-          line-height: 76px;
+          line-height: 74px;
           transform: rotate(-30deg);
           color: @red;
           &::before{
@@ -168,7 +174,7 @@ export default {
             top: 0;
             bottom: 0;
             margin: auto;
-            border: 1px dashed @red;
+            border: 1px dashed rgba(255, 0, 0, 89%);
             border-radius: 50%;
           }
         }

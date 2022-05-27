@@ -1,55 +1,74 @@
 <template>
   <div>
     <main v-if="$route.meta.hidenfooter&&fatherHidden">
-    <van-nav-bar :title="title">
-      <template #left>
-        <i class="iconfont icon-fanhui" @click="$router.back()"></i>
-        <!-- <i class="iconfont icon-guanbi" @click="reset" v-if="fatherHidden"></i> -->
-      </template>
-    </van-nav-bar>
-    <section>
-      <van-empty description="暂无收货地址" image="https://img01.yzcdn.cn/vant/custom-empty-image.png" v-if="address.length===0">
-        <van-button round type="danger" class="bottom-button" to="/person/address/addsite" @click="firstAdd">新增收货地址</van-button>
-      </van-empty>
-      <div v-else>
-        <van-address-list
-          v-model="chosenAddressId"
-          :list="address"
-          default-tag-text="默认"
-          @edit="onEdit"
-          @add="onAdd"
-        />
+      <van-nav-bar :title="title">
+        <template #left>
+          <i class="iconfont icon-fanhui" @click="$router.back()"></i>
+        </template>
+      </van-nav-bar>
+      <section>
+        <div class="unsign" v-if="!userinfo.code">
+          <van-empty description="登录后可管理收货地址">
+            <van-button round type="danger" class="bottom-button" to="/sign">转去登录</van-button>
+          </van-empty>
+        </div>
+        <div class="signed" v-else>
+          <div class="addressNull" v-if="address.length===0">
+            <van-empty description="没有收录地址">
+              <van-button round type="danger" class="bottom-button" to="/person/address/addsite" @click="firstAdd">新增收货地址</van-button>
+            </van-empty>
+          </div>
+          <div class="addressList">
+            <div class="item van-hairline--bottom" v-for="(item,index) in address" :key="index">
+              <p>
+                <span>{{item.province}}</span><span>{{item.city}}</span><span>{{item.county}}</span>
+              </p>
+              <p>{{item.addressDetail}}</p>
+              <div>
+                <span class="name">{{item.name}}</span>
+                <span class="tel">{{item.tel.slice(0,3)}}****{{item.tel.slice(-4)}}</span>
+                <i class="iconfont icon-xiugai" @click="onEdit(item._id)"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="add" v-if="userinfo.code">
+        <van-button round type="danger" @click="onAdd"><i class="iconfont icon-jiahao"></i>新建收货地址</van-button>
       </div>
-    </section>
-  </main>
-  <router-view></router-view>
+    </main>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import ajax from "../../api/ajax"
-import {mapState} from "vuex"
-import {NavBar,Empty,Button,AddressEdit,AddressList,Toast} from "vant"
+import { mapState } from "vuex"
+import {NavBar,Empty,Button,Toast } from "vant"
 export default {
   name:"Address",
   components:{
     [NavBar.name]:NavBar,
     [Empty.name]:Empty,
     [Button.name]:Button,
-    [AddressEdit.name]:AddressEdit,
-    [AddressList.name]:AddressList,
-    [Toast.name]:Toast,
+    [Toast.name]:Toast
   },
   data() {
     return {
       hidden: true,
-      title:"收货地址",
+      title:"地址管理",
       chosenAddressId: 0,
       fatherHidden:true
     }
   },
+  watch:{
+    updateIP(val){
+      if(val){
+        this.$store.dispatch("getAddress",this.userinfo.data._id)
+      }
+    }
+  },
   computed:{
-    ...mapState(["address"])
+    ...mapState(["address",'userinfo','updateIP'])
   },
   methods: {
     firstAdd(){
@@ -58,21 +77,25 @@ export default {
     demo(){
       this.fatherHidden = true
     },
-    onEdit(){
+    onEdit(val){
       this.fatherHidden = false
-      this.$router.push("/person/address/addsite")
+      this.$store.commit("updateIp",false)
+      this.$router.push("/person/address/editaddress?_id="+val)
     },
     onAdd(){
       this.fatherHidden = false
+      this.$store.commit("updateIp",false)
       this.$router.push("/person/address/addsite")
     }
   },
-  async mounted() {
+  mounted() {
     this.$bus.$on("close",this.demo)
-    // console.log(this.$store.state.userinfo)
-    const result = await ajax("http://8.219.72.10:9000/findaddress?uid=" + this.$store.state.userinfo.data._id)
-    this.$store.commit("findLocation",result["res"])
-  },
+    if(this.userinfo.code===1){
+      this.$nextTick(()=>{
+        this.$store.dispatch("getAddress",this.userinfo.data._id)
+      })
+    }
+  }
 }
 </script>
 
@@ -80,15 +103,77 @@ export default {
   @import url("../../common/css/mixin.less");
   main{
     height: 100vh;
+    display: flex;
+    flex-direction: column;
     .van-nav-bar{
       position: sticky;
-    }
-    .icon-fanhui{
-      font-size: 18px;
+      background-image: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
+      .icon-fanhui{
+        font-size: 18px;
+      }
     }
     section{
+      padding: 0 12px;
+      flex: 1;
+      background: #fff;
+      .unsign,.signed{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        img{
+          width: 120px;
+          margin-bottom: 32px;
+        }
+        .van-address-list{
+          width: 100%;
+        }
+        .addressList{
+          width: 100%;
+          height: 300px;
+          .item{
+            font-size: 14px;
+            color: gray;
+            padding: 10px 0;
+            p{
+              margin: 0;
+            }
+            p:nth-child(2){
+              font-size: 15px;
+              color: #000;
+              margin: 6px 0;
+            }
+            div{
+              display: flex;
+              align-items: center;
+              .name{
+                flex: 0 0 26%;
+              }
+              .tel{
+                flex: 1;
+                font-family: "macfont";
+                letter-spacing: 1px;
+              }
+              i{
+                font-size: 18px;
+                font-weight: 600;
+              }
+            }
+          }
+        }
+      }
       .van-tab__pane{
         padding: 0 12px;
+      }
+    }
+    .add{
+      width: 100%;
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px 0;
+      button{
+        flex: 0 0 64%;
       }
     }
   }

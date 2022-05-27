@@ -5,37 +5,40 @@
         <i class="iconfont icon-fanhui" @click="$router.back()"></i>
       </template>
     </van-nav-bar>
-    <van-empty
-      class="custom-image"
-      image="https://img01.yzcdn.cn/vant/custom-empty-image.png"
-      description="这里都落灰了..."
-      v-if="shopcar.length===0"
-    >
-    <van-button type="primary" to="/home">去首页逛逛</van-button>
-    </van-empty>
     <section>
-      <van-checkbox-group v-model="result" ref="checkboxGroup">
-        <div class="shopmincard" v-for="(items,index) in shopcar" :key="index">
-          <van-checkbox :name="items.price"></van-checkbox>
-          <div class="img-box">
-            <van-image
-              width="100%"
-              height="70"
-              src=""
-            />
-          </div>
-          <div class="info">
-            <p class="title van-multi-ellipsis--l3">
-              <span v-for="(item,index) in items.title" :key="index">{{item}}</span>
-            </p>
-            <p class="price">
-              <i class="iconfont icon-renminbi1"></i>
-              <span>{{items.price}}</span>
-            </p>
-          </div>
-          <i class="iconfont icon-guanbi" @click="onDelete(items['_id'])"></i>
+      <div class="unsign" v-if="!userinfo.code">
+        <van-empty description="登录后查看车车情况！">
+          <van-button round type="danger" class="bottom-button" to="/sign">转去登录</van-button>
+        </van-empty>
+      </div>
+      <div class="signed" v-else>
+        <div v-if="shopcar.length===0" class="carNull">
+          <img src="../../assets/empty.svg" alt="">
+          <van-button type="primary" to="/home" round>去首页逛逛</van-button>
         </div>
-      </van-checkbox-group> 
+        <van-checkbox-group v-model="result" ref="checkboxGroup">
+          <div class="shopmincard" v-for="(items,index) in shopcar" :key="index">
+            <van-checkbox :name="items.price"></van-checkbox>
+            <div class="img-box">
+              <van-image
+                width="100%"
+                height="70"
+                :src="items.photo[0]"
+              />
+            </div>
+            <div class="info">
+              <p class="title van-multi-ellipsis--l3">
+                <span v-for="(item,index) in items.title" :key="index">{{item}}</span>
+              </p>
+              <p class="price">
+                <i class="iconfont icon-renminbi1"></i>
+                <span>{{items.price}}</span>
+              </p>
+            </div>
+            <i class="iconfont icon-guanbi" @click="onDelete(items['_id'])"></i>
+          </div>
+        </van-checkbox-group> 
+      </div>
     </section>
     <van-submit-bar :price="totalMoney" button-text="埋单" button-color="#ee0a24" class="van-hairline--top" @submit="onSubmit">
       <van-checkbox v-model="resultC"></van-checkbox>
@@ -48,7 +51,7 @@
 </template>
 
 <script>
-import {mapGetters,mapState} from "vuex"
+import {mapState} from "vuex"
 import {NavBar,Empty,Button,SubmitBar,Checkbox,CheckboxGroup,Toast,Image as VanImage,Tag} from "vant"
 export default {
   name:"ShopCar",
@@ -88,7 +91,7 @@ export default {
         console.log(value)
       }
     },
-    ...mapState(["shopcar"])
+    ...mapState(["shopcar",'userinfo'])
   },
   methods: {
     onSubmit(){
@@ -113,50 +116,62 @@ export default {
   @import url("../../common/css/mixin.less");
   main{
     height: 100vh;
+    display: flex;
+    flex-direction: column;
     .icon-fanhui{
       font-size: 18px;
     }
-    .custom-image{
-      padding: 170px 0;
-    }
     section{
-      padding: 60px 12px 0;
-      .shopmincard{
-        padding: 16px 8px;
-        background-color: #fff;
-        margin-bottom: 16px;
-        border-radius: 8px;
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        .img-box{
-          width: 17%;
-          margin: 0 8px;
-        }
-        .info{
-          flex: 1;
-          font-size: 14px;
-          p{
-            opacity: .7;
-            color: #000;
-            margin: 0;
-            padding: 4px 0;
+      padding: 0 12px;
+        .signed,.unsign{
+        padding: 64px 0;
+        flex: 1;
+        .shopmincard{
+          padding: 16px 8px;
+          background-color: #fff;
+          margin-bottom: 16px;
+          border-radius: 8px;
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          .img-box{
+            width: 17%;
+            margin: 0 8px;
           }
-          span{
-            margin-right: 3px;
+          .info{
+            flex: 1;
+            font-size: 14px;
+            p{
+              opacity: .7;
+              color: #000;
+              margin: 0;
+              padding: 4px 0;
+            }
+            span{
+              margin-right: 3px;
+            }
+            .price{
+              font-family: "macfont";
+              color: @red;
+              font-weight: 600;
+              letter-spacing: 1px;
+            }
           }
-          .price{
-            font-family: "macfont";
-            color: @red;
+          .icon-guanbi{
             font-weight: 600;
-            letter-spacing: 1px;
+            opacity: .7;
+            align-self: flex-start;
           }
         }
-        .icon-guanbi{
-          font-weight: 600;
-          opacity: .7;
-          align-self: flex-start;
+        .carNull{
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          img{
+            width: 120px;
+            margin-bottom: 32px;
+          }
         }
       }
     }

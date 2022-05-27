@@ -2,7 +2,9 @@
 import {
   RECEIVE_RECOMMENDGOODS,
   RECEIVE_CATEGORY,
-  RECEIVE_USERINFO
+  RECEIVE_ADDRESS,
+  RECEIVE_USERINFO,
+  RESET_USERINFO
 } from "./mutation-types"
 
 export default {
@@ -15,22 +17,25 @@ export default {
   [RECEIVE_USERINFO] (state,userinfo){
     state.userinfo = userinfo
   },
+  [RESET_USERINFO] (state){
+    state.userinfo = {}
+  },
+  [RECEIVE_ADDRESS] (state,address){
+    state.address = address['res']
+  },
   cacheDetail(state,value){
     state.detailpage = value
   },
   setLogin(state,value){
-    state.login = value
+    state.userinfo = value
   },
   addCar(state,value){
     state.shopcar.push(value)
   },
-  updataCar(state,value){
+  updateCar(state,value){
     state.shopcar = value
   },
-  addLocation(state,value){
-    state.address.push(value)
-  },
-  findLocation(state,value){
-    state.address = value
+  updateIp(state,value){
+    state.updateIP = value
   }
 }

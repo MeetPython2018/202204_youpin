@@ -72,7 +72,7 @@
     </section>
     <van-goods-action class="van-hairline--top">
       <van-goods-action-icon icon="chat-o" text="客服"/>
-      <van-goods-action-icon icon="cart-o" text="购物车" :badge="totalNum" @click="$router.push('/person/shopcar?s_id=1')" />
+      <van-goods-action-icon icon="cart-o" text="购物车" :badge="totalNum" @click="$router.push('/person/shopcar')" />
       <van-goods-action-button type="warning" text="加入购物车" @click="addCar" :disabled="disabled" />
       <van-goods-action-button type="danger" text="立即购买" @click="buyNow(detailpage['_id'])"/>
     </van-goods-action>

@@ -185,6 +185,7 @@ export default {
           const res = await Login({username:this.email,password:this.password})
           this.$store.commit("setLogin",res)
           if(res.code===1){
+            this.isSubmit = false
             this.$router.replace("/person")
           }else{
             this.isSubmit = false

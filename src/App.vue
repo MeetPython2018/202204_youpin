@@ -1,6 +1,6 @@
 <template>
   <div id="ln">
-    <keep-alive include="Home">
+    <keep-alive include="Home,Category">
       <router-view></router-view>
     </keep-alive>
     <footer v-if="!$route.meta.hidenfooter">
