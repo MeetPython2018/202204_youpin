@@ -60,13 +60,17 @@
               <van-switch v-model="checked" size="18px" active-color="#07c160" inactive-color="#dcdee0"/>
             </template>
           </van-field>
-          <van-field v-model="captcha" label-width="60" type="text" label="验证码" 
-            required
-            placeholder="图形验证码"
-            maxlength="4"
-            clearable
-            @blur="checkPassword"
+          <div class="captcha">
+            <van-field v-model="captcha" label-width="60" type="text" label="验证码" 
+              required
+              placeholder="图形验证码"
+              maxlength="4"
+              clearable
+              @blur="checkPassword"
             />
+            <img src="http://8.219.72.10:9000/captcha" alt="图片验证码" @click="refreshCaptcha($event)">
+          </div>
+          
         </div>
         <div class="tips">
           <p>
@@ -85,7 +89,6 @@
 </template>
 
 <script>
-import ajax from "../../api/ajax"
 import {Login} from "@/api"
 import {NavBar,Form,Field,Button,CountDown,Toast,Switch} from "vant"
 export default {
@@ -210,6 +213,10 @@ export default {
           Toast("密码为数字+字母组合，长度不低于6位")
         }
       }
+    },
+    // 获取验证码
+    refreshCaptcha(event){
+      event.target.src = 'http://8.219.72.10:9000/captcha?time='+Date.now()
     }
   }
 }
@@ -308,6 +315,15 @@ export default {
           font-size: 14px;
           text-align: center;
           opacity: .64;
+        }
+        .captcha{
+          position: relative;
+          img{
+            height: 100%;
+            position: absolute;
+            right: 0;
+            top: 0;
+          }
         }
       }
     }
