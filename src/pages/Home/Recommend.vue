@@ -96,22 +96,28 @@
           <div class="tip">
             <span>每日上新</span>
           </div>
-          <ul>
-            <li v-for="(item,index) in recommends.slice(0,5)" :key="index" >
+          <van-list>
+            <a v-for="(item,index) in recommends.slice(0,recommends.length/2)" :key="index">
               <GoodsCard :asyncData="item" @click.native="onSend(item)">
                 <span class="more">看相似</span>
               </GoodsCard>
-            </li>
-          </ul>
+            </a>
+          </van-list>
         </van-col>
         <van-col span="11">
-          <ul>
-            <li v-for="(item,index) in recommends.slice(5)" :key="index">
+          <van-list
+            v-model="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            @load="onLoad"
+            :immediate-check="init"
+          >
+            <a v-for="(item,index) in recommends.slice(recommends.length/2)" :key="index">
               <GoodsCard :asyncData="item" @click.native="onSend(item)">
                 <span class="more">看相似</span>
               </GoodsCard>
-            </li>
-          </ul>
+            </a>
+          </van-list>
         </van-col>
       </van-row>
     </div>
@@ -119,8 +125,10 @@
 </template>
 
 <script>
-import { Col, Row,Swipe, SwipeItem, Image as VanImage ,Loading,Tag,Step, Steps  } from 'vant';
-import GoodsCard from "../../components/PublicComponents/GoodsCard.vue"
+import { Col, Row,Swipe, SwipeItem, Image as VanImage ,Loading,Tag,List} from 'vant';
+import GoodsCard from "../../components/PublicComponents/GoodsCard.vue";
+import { reqPagingGoods } from "@/api";
+import { mapState } from 'vuex';
 export default {
   name:"Recommend",
   components:{
@@ -130,12 +138,10 @@ export default {
     [SwipeItem.name]:SwipeItem,
     [VanImage.name]:VanImage,
     [Loading.name]:Loading,
-    [Step.name]:Step,
-    [Steps.name]:Steps,
+    [List.name]:List,
     [Tag.name]:Tag,
     GoodsCard
   },
-  props:["recommends"],
   data() {
     return {
       current: 0,
@@ -144,13 +150,19 @@ export default {
         "http://8.219.72.10:9000/siteimg/home/628de78be4b04c32de5ee661.jpg",
         "http://8.219.72.10:9000/siteimg/home/6256916ae4b04c32de5ec712.jpg",
         "http://8.219.72.10:9000/siteimg/home/625f8150e4b04c32de5ecbdc.jpg",
-      ]
+      ],
+      list: [],
+      loading: false,
+      finished: false,
+      init:false,
+      skipIndex:6,
     }
   },
   computed:{
     active(){
       return (this.current+1)%4
     },
+    ...mapState(["recommends"])
   },
   methods:{
     onChange(index) {
@@ -161,6 +173,18 @@ export default {
       this.$store.commit("cacheDetail",val)
       this.$nextTick(()=>{
         this.$bus.$emit("sendData",val)
+      })
+    },
+    onLoad(){
+      reqPagingGoods(this.skipIndex).then((value)=>{
+        if(value.length!==0){
+          this.loading = false
+          this.skipIndex += 6
+          this.$store.commit("pushGoodsinfo",value)
+        }else{
+          this.loading = false
+          this.finished = true
+        }
       })
     }
   },
@@ -278,13 +302,10 @@ export default {
               font-size: @font-size-lg;
             }
           }
-          ul{
-            margin-top: -16px;
-            li{
-              width: 100%;
-              border-radius: 8px;
-              margin: 16px 0;
-              background-color: #fff;
+          .van-list{
+            a{
+              display: inline-block;
+              margin-bottom: 16px;
             }
           }
         }

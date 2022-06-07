@@ -26,7 +26,7 @@
     </div>
     <div class="good-wrap">
       <ul>
-        <li v-for="(item,index) in recommends" :key="index" >
+        <li v-for="(item,index) in queryByType" :key="index" >
           <GoodsCard :asyncData="item" @click.native="onSend(item)">
             <span class="more">看相似</span>
           </GoodsCard>
@@ -45,7 +45,6 @@ export default {
   props:["category"],
   data() {
     return {
-      
     }
   },
   components:{
@@ -57,7 +56,7 @@ export default {
     GoodsCard,
   },
   computed:{
-    ...mapState(["recommends"])
+    ...mapState(["queryByType"])
   },
   methods:{
     onSend(val){
@@ -67,7 +66,7 @@ export default {
         this.$bus.$emit("sendData",val)
       })
     }
-  }
+  },
 }
 </script>
 
@@ -79,7 +78,7 @@ export default {
       width: 100%;
       border-radius: 8px;
       margin-top: 16px;
-      padding: 10px;
+      padding: 5px 0;
       box-sizing: border-box;
       margin-bottom: 16px;
       background-color: #fff;
@@ -87,21 +86,23 @@ export default {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
+        justify-content: space-between;
         .van-col{
-          flex: 1 0 22%;
+          flex: 0 0 25%;
           display: flex;
           flex-direction: column;
           align-items: center;
-          padding-bottom: 12px;
+          padding-bottom: 8px;
+          font-family: "苹方";
           .iconbox{
             width: 80%;
-            height: 50px;
+            height: 46px;
             text-align: center;
             vertical-align: middle;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             i{
               font-size: 24px;
               color: #333;
@@ -116,11 +117,15 @@ export default {
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: "macfont";
             span{
               color: #333;
               opacity: .7;
               font-size: @font-size-md;
+            }
+          }
+          &:last-child{
+            .iconbox{
+              margin-bottom: -8px;
             }
           }
         }

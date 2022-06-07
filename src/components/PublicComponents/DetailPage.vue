@@ -18,10 +18,13 @@
       <div class="about">
         <div class="imgbox">
           <van-image
-            width="100%"
-            height="180"
-            src=""
-          />
+            height="100%"
+            :src="detailpage.photo[0]"
+          >
+            <template v-slot:loading>
+              <van-loading type="spinner" size="20" />
+            </template>
+          </van-image>
         </div>
         <div class="info">
           <p>
@@ -81,7 +84,7 @@
 
 <script>
 import {mapGetters,mapState} from "vuex"
-import {NavBar,ShareSheet,Toast,Image as VanImage,Tag,GoodsAction, GoodsActionIcon, GoodsActionButton} from "vant"
+import {NavBar,ShareSheet,Toast,Image as VanImage,Loading,Tag,GoodsAction, GoodsActionIcon, GoodsActionButton} from "vant"
 export default {
   name:"DetailPage",
   components:{
@@ -89,6 +92,7 @@ export default {
     [ShareSheet.name]:ShareSheet,
     [Toast.name]:Toast,
     [VanImage.name]:VanImage,
+    [Loading.name]:Loading,
     [Tag.name]:Tag,
     [GoodsAction.name]:GoodsAction,
     [GoodsActionIcon.name]:GoodsActionIcon,
@@ -119,7 +123,6 @@ export default {
   computed:{
     ...mapGetters(["totalNum"]),
     ...mapState(["detailpage","shopcar"]),
-
   },
   methods:{
     onSelect(option) {
@@ -127,12 +130,19 @@ export default {
       this.showShare = false;
     },
     addCar(){
-      this.disabled = true
-      console.log(this.goodsData)
-      this.$store.dispatch("addcar",this.detailpage)
+      if(this.$store.userinfo){
+        this.disabled = true
+        this.$store.dispatch("addcar",this.detailpage)
+      }else{
+        Toast.fail("登录后操作")
+      }
     },
     buyNow(val){
-      this.$router.push(`/submit?_id=${val}`)
+      if(this.$store.userinfo){
+        this.$router.push(`/submit?_id=${val}`)
+      }else{
+        Toast.fail("登录后操作")
+      }
     }
   },
   mounted(){
@@ -165,6 +175,11 @@ export default {
         border-radius: 8px;
         padding: 10px 8px;
         .imgbox{
+          width: 100%;
+          height: 180px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
           .van-image{
             vertical-align: bottom;
           }

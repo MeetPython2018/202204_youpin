@@ -5,6 +5,10 @@ const BASE_URL = '/api'
 
 // 获取首屏商品
 export const reqRecommedGoods = () => ajax(`${BASE_URL}/pullgoods`)
+// 获取分页数据
+export const reqPagingGoods = (pindex) => ajax(`${BASE_URL}/paging?pindex=`+pindex)
+// 按类型获取商品
+export const reqGoodsByType = (type) => ajax(`${BASE_URL}/querybytype?type=`+type)
 // 查询业务线分类
 export const reqCategory = () => ajax(`${BASE_URL}/category`)
 // 登录
