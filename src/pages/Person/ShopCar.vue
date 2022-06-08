@@ -17,12 +17,11 @@
           <van-button type="primary" to="/home" round>去首页逛逛</van-button>
         </div>
         <van-checkbox-group v-model="result" ref="checkboxGroup">
-          <div class="shopmincard" v-for="(items,index) in shopcar" :key="index">
+          <div class="shopmincard" v-for="(items,index) in shopcar.data" :key="index">
             <van-checkbox :name="items.price"></van-checkbox>
             <div class="img-box">
               <van-image
-                width="100%"
-                height="70"
+                height="100%"
                 :src="items.photo[0]"
               />
             </div>
@@ -37,7 +36,7 @@
             </div>
             <i class="iconfont icon-guanbi" @click="onDelete(items['_id'])"></i>
           </div>
-        </van-checkbox-group> 
+        </van-checkbox-group>
       </div>
     </section>
     <van-submit-bar :price="totalMoney" button-text="埋单" button-color="#ee0a24" class="van-hairline--top" @submit="onSubmit">
@@ -106,7 +105,7 @@ export default {
           return true
         }
       })
-      this.$store.commit("updataCar",res)
+      this.$store.commit("updateCar",res)
     }
   },
 }

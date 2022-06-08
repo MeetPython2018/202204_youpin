@@ -4,8 +4,9 @@ import {
   RECEIVE_QUERYBYTYPE,
   RECEIVE_CATEGORY,
   RECEIVE_ADDRESS,
+  RECEIVE_SHOPPING,
   RECEIVE_USERINFO,
-  RESET_USERINFO
+  RESET_USERINFO,
 } from "./mutation-types"
 
 export default {
@@ -28,14 +29,18 @@ export default {
   [RECEIVE_ADDRESS] (state,address){
     state.address = address['res']
   },
+  [RECEIVE_SHOPPING] (state,data){
+    state.shopcar = data
+  },
   cacheDetail(state,value){
     state.detailpage = value
   },
   setLogin(state,value){
     state.userinfo = value
   },
-  addCar(state,value){
-    state.shopcar.push(value)
+  // 添加购物车
+  addShoping(state,value){
+    state.shopcar.data.push(value.data)
   },
   updateCar(state,value){
     state.shopcar = value

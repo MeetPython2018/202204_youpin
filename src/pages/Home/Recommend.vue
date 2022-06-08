@@ -214,12 +214,12 @@ export default {
     }
   }
   main{
-    padding: 16px 12px 6px;
+    padding: 14px 12px 0;
+    background: #f2f2f2;
     font-family: @base-font-family;
     font-size: @font-size-lg;
     .swipe-wrap{
       width: 100%;
-      margin-bottom: 16px;
       .van-swipe-item{
         background-color: #fff;
         border-radius: 8px;
@@ -230,8 +230,7 @@ export default {
     }
     .promise{
       width: 100%;
-      height: 32px;
-      margin-bottom: 16px;
+      padding: 14px 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -249,7 +248,7 @@ export default {
       }
     }
     .category-wrap{
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       ul{
         width: 100%;
         border-radius: 8px;
@@ -280,10 +279,12 @@ export default {
       }
     }
     .ad{
-      margin-bottom: 16px;
+      margin-bottom: 14px;
+      .van-image{
+        vertical-align: bottom;
+      }
     }
     .newgoods{
-      padding-bottom: 48px;
       .van-row{
         width: 100%;
         .van-col{
@@ -296,8 +297,9 @@ export default {
             text-align: center;
             padding: 12px 0;
             border-radius: 8px;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             background-color: #fff;
+            color: @red;
             span{
               font-size: @font-size-lg;
             }
@@ -305,12 +307,11 @@ export default {
           .van-list{
             a{
               display: inline-block;
-              margin-bottom: 16px;
+              margin-bottom: 14px;
             }
           }
         }
       }
     }
   }
-
 </style>

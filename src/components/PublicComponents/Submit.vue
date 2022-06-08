@@ -1,6 +1,6 @@
 <template>
   <main>
-    <van-nav-bar title="确认订单" :fixed="true">
+    <van-nav-bar title="确认订单" :fixed="true" :placeholder="true">
       <template #left>
         <i class="iconfont icon-fanhui" @click="$router.back()"></i>
       </template>
@@ -14,7 +14,7 @@
       <div class="order-list">
         <div class="mini-card">
           <div class="imgbox">
-            <van-image src=""></van-image>
+            <van-image :src="detailpage['photo']"></van-image>
           </div>
           <p class="title van-multi-ellipsis--l3">
             <span v-for="item in detailpage['title']" :key="item['_id']">{{item}}</span>
@@ -29,22 +29,22 @@
         <div class="col van-hairline--bottom">
           <div class="name">
             <img src="../../assets/zhipay.svg" alt="" width="25">
-            <span>支付宝</span>
-            <van-tag type="primary" plain size="medium">支持花呗<span class="number">64、128、512</span>期结算</van-tag>
+            <span class="title">支付宝</span>
+            <van-tag type="primary" plain>支持花呗<span class="number">64、128、512</span>期结算</van-tag>
           </div>
           <van-switch v-model="zhiPay" size="20px" active-color="#ee0a24" inactive-color="#dcdee0" />
         </div>
         <div class="col van-hairline--bottom">
           <div class="name">
             <img src="../../assets/wepay.svg" alt="" width="25">
-            <span>微信支付</span>
+            <span class="title">微信支付</span>
           </div>
           <van-switch v-model="wechatPay" size="20px" active-color="#ee0a24" inactive-color="#dcdee0" />
         </div>
         <div class="col van-hairline--bottom">
           <div class="name">
-            <span>退货无忧</span>
-            <van-tag type="primary" plain size="medium">可享受<span class="number">1</span>次免费上门取件</van-tag>
+            <span class="title">退货无忧</span>
+            <van-tag type="primary" plain>可享受<span class="number">1</span>次免费上门取件</van-tag>
           </div>
           <div class="other">
             <span class="number"><i class="iconfont icon-renminbi1"></i>0.99</span>
@@ -53,8 +53,8 @@
         </div>
         <div class="col van-hairline--bottom">
           <div class="name">
-            <span>新人券</span>
-            <van-tag type="primary" plain size="medium">已选推荐优惠券</van-tag>
+            <span class="title">新人券</span>
+            <van-tag type="primary" plain>已选推荐优惠券</van-tag>
           </div>
           <div class="other">
             <span class="number">-<i class="iconfont icon-renminbi1"></i>300</span>
@@ -65,8 +65,18 @@
             <span>配送方式</span>
           </div>
           <div class="other">
-            <span>德玛西亚速递</span>
-            <i class="iconfont icon-xiangyoujiantou"></i>
+            <van-popover
+              v-model="showPopover"
+              trigger="click"
+              :actions="actions"
+              @select="onSelect"
+            >
+              <template #reference>
+                <span>{{Ems}}</span>
+                <i class="iconfont icon-xiangyoujiantou"></i>
+              </template>
+            </van-popover>
+            
           </div>
         </div>
         <div class="col van-hairline--bottom">
@@ -78,12 +88,17 @@
           </div>
         </div>
         <div class="col van-hairline--bottom">
-          <div class="name">
-            <span>备注</span>
-          </div>
-          <div class="other" style="opacity:.7;">
-            <span>填写备注(可选)</span>
-          </div>
+            <van-field
+              v-model="message"
+              rows="2"
+              autosize
+              label="备注"
+              type="textarea"
+              maxlength="50"
+              placeholder="填写备注(可选)"
+              show-word-limit
+            />
+          
         </div>
       </div>
     </section>
@@ -103,7 +118,7 @@
 
 <script>
 import {mapState} from "vuex"
-import {NavBar,Toast,Image as VanImage,Tag,Switch,Checkbox,Button,Notify } from "vant"
+import {NavBar,Toast,Image as VanImage,Tag,Switch,Checkbox,Button,Notify,Popover,Field} from "vant"
 export default {
   name:"Submit",
   components:{
@@ -114,7 +129,10 @@ export default {
     [Switch.name]:Switch,
     [Checkbox.name]:Checkbox,
     [Button.name]:Button,
-    [Notify.name]:Notify
+    [Notify.name]:Notify,
+    [Popover.name]:Popover,
+    [Field.name]:Field
+
   },
   data() {
     return {
@@ -122,6 +140,10 @@ export default {
       checkbox:true,
       zhiPay:true,
       wechatPay:false,
+      showPopover: false,
+      Ems:'DHL国际快递',
+      actions: [{ text: 'DHL国际快递' }, { text: 'Fedex国际快递' }, { text: 'UPS国际快递' }],
+      message:''
     }
   },
   watch:{
@@ -141,11 +163,11 @@ export default {
     },
     submit(){
       Notify({ type: 'success', message: '发现内鬼,出货失败!' });
-    }
-  },
-  mounted() {
-    console.log(this.$route.query)
-  },
+    },
+    onSelect(action) {
+      this.Ems = action.text
+    },
+  }
 }
 </script>
 
@@ -162,10 +184,9 @@ export default {
       font-size: 18px;
     }
     section{
-      padding: 60px 12px 0;
+      padding: 14px 12px;
       color: #888;
       .empty-address{
-        padding: 8px;
         box-sizing: border-box;
         display: flex;
         justify-content: space-between;
@@ -175,7 +196,7 @@ export default {
           font-weight: 600;
         }
         .icon-dingxiang{
-          margin-right: 8px;
+          margin-right: 4px;
         }
         p{
           flex: 1;
@@ -186,24 +207,24 @@ export default {
         }
       }
       .order-list{
-        padding: 16px 0 24px;
         .mini-card{
           width: 100%;
           background-color: #fff;
-          padding: 16px 8px;
+          padding: 14px 10px;
+          margin: 14px 0;
           box-sizing: border-box;
           display: flex;
-          justify-content: space-between;
+          justify-content: space-around;
           align-items: center;
           position: relative;
           border-radius: 8px;
           .imgbox{
-            width: 20%;
+            width: 19%;
             flex-shrink: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-right: 16px;
+            margin-right: 14px;
             .van-image{
               width: 100%;
               height: 64px;
@@ -235,22 +256,24 @@ export default {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 16px 8px;
-          .name{
+          padding: 12px 10px;
+          font-size: @font-size-md;
+          .van-cell{
+            padding: 0;
             display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            span{
-              margin: 0 3px;
-            }
           }
-          .other{
+          .name,.other{
             display: flex;
             align-items: center;
-            span{
-              margin: 0 3px;
+            img{
+              margin-right: 4px;
             }
-            
+            .title{
+              margin-right: 4px;
+            }
+            .number{
+              margin-right: 4px;
+            }
           }
         }
       }

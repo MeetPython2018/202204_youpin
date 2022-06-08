@@ -8,7 +8,7 @@
       </van-image>
     </div>
     <div class="title van-multi-ellipsis--l2">
-      <van-tag type="danger" size="medium" plain>{{data.title.slice(0,1)[0]}}</van-tag>
+      <van-tag type="danger" plain>{{data.title.slice(0,1)[0]}}</van-tag>
       <span v-for="(item,index) of data.title.slice(1)" :key="index">{{item}}</span>
     </div>
     <div class="extend">
@@ -41,9 +41,6 @@ export default {
     [Tag.name]:Tag,
     [VanImage.name]:VanImage,
     [Loading.name]:Loading
-  },
-  mounted(){
-    // console.log(this.asyncData)
   }
 }
 </script>
@@ -60,16 +57,19 @@ export default {
     .icon{
       display: flex;
       justify-content: center;
-      padding: 10px 0 20px;
+      margin-bottom: 16px;
     }
     .title{
-      font-size: 13px;
+      font-size: @font-size-sm;
+      line-height: 1.5;
+      margin-bottom: 8px;
       .van-tag{
         border-radius: 4px;
-        margin-right: 8px;
+        padding: 1px 4px;
+        margin-right: 4px;
         font-family: "macfont";
         letter-spacing: .5px;
-        font-size: 11px;
+        font-size: @font-size-xs;
       }
       span{
         margin-right: 2px;
@@ -81,16 +81,15 @@ export default {
       justify-content: space-between;
       align-items: center;
       font-family: "苹方";
-      padding-top: 10px;
+      font-size: @font-size-xs;
       .price{
         font-family: "macfont";
         color: @red;
         letter-spacing: .5px;
         i{
-          font-size: 13px;
-          margin-right: 3px;
+          font-size: @font-size-xs;
+          margin-right: 2px;
         }
-        
       }
       .more{
         color: #000;

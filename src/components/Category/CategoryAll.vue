@@ -1,6 +1,6 @@
 <template>
   <main>
-    <van-nav-bar :fixed="true">
+    <van-nav-bar :placeholder="true">
       <template #left>
         <van-search
           v-model="value"
@@ -75,18 +75,29 @@ export default {
 <style lang="less" scoped>
   @import url("../../common/css/mixin.less");
   main{
-    width: 100%;
-    position: relative;
-    .van-search{
-      padding: 0;
-      flex: 1;
+    height: 100%;
+    overflow: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    
+    .van-nav-bar{
+      .van-search{
+        padding: 0;
+        flex: 1;
+      }
+    }
+    .van-nav-bar .van-icon{
+      color: #888;
     }
     section{
+      height: 100%;
+      overflow-y: auto;
       display: flex;
-      padding-top: 70px;
-      background-color: #fff;
-      padding: 50px 12px 0;
       box-sizing: border-box;
+      flex-grow: 1;
+      padding: 10px 12px;
+      background-color: #f2f2f2;
       &::-webkit-scrollbar{
         display: none;
       }
@@ -96,7 +107,6 @@ export default {
         }
       }
       .checkData{
-        // overflow-y: scroll;
         font-size: 12px;
         text-align: center;
         &::-webkit-scrollbar{
@@ -115,13 +125,16 @@ export default {
             padding: 10px 0;
             .imgbox{
               width: 50%;
-              height: 50px;
+              height: 46px;
               text-align: center;
               margin-bottom: 6px;
               background: #f5f5f5;
               display: flex;
               align-items: center;
               justify-content: center;
+            }
+            .title{
+              color: #888;
             }
           }
         }

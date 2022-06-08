@@ -4,3 +4,4 @@ export const RECEIVE_CATEGORY = "receive_category"                // 获取首�
 export const RECEIVE_ADDRESS = "receive_address"                // 获取收货地址
 export const RECEIVE_USERINFO = "receive_userinfo"             // 自动获取用户信息
 export const RESET_USERINFO = "reset_userinfo"                // 重置用户信息
+export const RECEIVE_SHOPPING = "receive_shopping"                // 获取购物车信息

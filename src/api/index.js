@@ -15,8 +15,12 @@ export const reqCategory = () => ajax(`${BASE_URL}/category`)
 export const Login = (data) => ajax(`${BASE_URL}/sign`,data,"POST")
 // 使用seesion自动登录
 export const autoLogin = ()=> ajax(`${BASE_URL}/userinfo`)
+// 添加商品至购物车
+export const addShopping = (data) => ajax(`${BASE_URL}/addtoshopping`,data,"POST")
+// 查询购物车信息
+export const reqShopping = (uid) => ajax(`${BASE_URL}/queryshopping?uid=`+uid)
 // 查询地址
-export const reqAddress = (uid) => ajax(`${BASE_URL}/findaddress?uid=`+uid)
+export const reqAddress = (uid) => ajax(`${BASE_URL}/queryaddress?uid=`+uid)
 // 添加地址
 export const addAddress = (data) => ajax(`${BASE_URL}/addlocation`,data,"POST")
 

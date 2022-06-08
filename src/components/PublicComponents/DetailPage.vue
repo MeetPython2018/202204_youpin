@@ -1,6 +1,6 @@
 <template>
   <main>
-    <van-nav-bar title="详情" :fixed="true">
+    <van-nav-bar title="详情" :fixed="false" :placeholder="true">
       <template #left>
         <i class="iconfont icon-fanhui" @click="$router.back()"></i>
       </template>
@@ -50,7 +50,7 @@
         <div class="serve">
           <van-tag round type="danger">活动</van-tag>
           <p>回收手机、钟表、奢侈品黄金,免费估价</p>
-          <i class="iconfont icon-xiangyoujiantou"></i>
+          <i class="iconfont icon-xiangyoujiantou" @click="$router.replace('/sell')"></i>
         </div>
       </div>
       <div class="goods-detail">
@@ -67,7 +67,7 @@
             width="100%"
             height="230"
             src=""
-            v-for="value in 6"
+            v-for="value in 4"
             :key="value"
           />
         </div>
@@ -75,15 +75,15 @@
     </section>
     <van-goods-action class="van-hairline--top">
       <van-goods-action-icon icon="chat-o" text="客服"/>
-      <van-goods-action-icon icon="cart-o" text="购物车" :badge="totalNum" @click="$router.push('/person/shopcar')" />
-      <van-goods-action-button type="warning" text="加入购物车" @click="addCar" :disabled="disabled" />
+      <van-goods-action-icon icon="cart-o" text="购物车" :badge="logined ? totalNum:0" @click="$router.push('/person/shopcar')" />
+      <van-goods-action-button type="warning" :text="this.disabled ? '已加入购物车':'加入购物车'" @click="addCar" :disabled="disabled" />
       <van-goods-action-button type="danger" text="立即购买" @click="buyNow(detailpage['_id'])"/>
     </van-goods-action>
   </main>
 </template>
 
 <script>
-import {mapGetters,mapState} from "vuex"
+import {mapState,mapActions,mapGetters} from "vuex"
 import {NavBar,ShareSheet,Toast,Image as VanImage,Loading,Tag,GoodsAction, GoodsActionIcon, GoodsActionButton} from "vant"
 export default {
   name:"DetailPage",
@@ -109,6 +109,7 @@ export default {
         { name: '二维码', icon: 'qrcode' },
       ],
       disabled: false,
+      totalNum:0
     }
   },
   watch:{
@@ -118,11 +119,22 @@ export default {
       handler(newVal){
         this.goodsData = newVal
       }
+    },
+    shopcar:{
+      deep:true,
+      handler(newVal){
+        this.totalNum = newVal.data.length
+        newVal.data.forEach((ele)=>{
+          if(ele["_id"]===this.detailpage["_id"]){
+            this.disabled = true
+          }
+        })
+      }
     }
   },
   computed:{
-    ...mapGetters(["totalNum"]),
-    ...mapState(["detailpage","shopcar"]),
+    ...mapGetters(['logined']),
+    ...mapState(["detailpage","shopcar"])
   },
   methods:{
     onSelect(option) {
@@ -130,34 +142,38 @@ export default {
       this.showShare = false;
     },
     addCar(){
-      if(this.$store.userinfo){
+      if(this.$store.state.userinfo.code!==0){
         this.disabled = true
-        this.$store.dispatch("addcar",this.detailpage)
+        let demoData = this.detailpage
+        demoData['uid'] = this.$store.state.userinfo.data._id
+        this.$store.dispatch("addtoShoping",demoData)
       }else{
         Toast.fail("登录后操作")
       }
     },
     buyNow(val){
-      if(this.$store.userinfo){
+      if(this.$store.state.userinfo){
         this.$router.push(`/submit?_id=${val}`)
       }else{
         Toast.fail("登录后操作")
       }
+    },
+    ...mapActions(['getShopping'])
+  },
+  created(){
+    if(this.logined){
+      this.getShopping(this.$store.state.userinfo.data._id)
     }
   },
-  mounted(){
-    this.shopcar.forEach((ele)=>{
-      if(ele["_id"]===this.detailpage["_id"]){
-        this.disabled = true
-      }
-    })
-  }
 }
 </script>
 
 <style lang="less" scoped>
   @import url("../../common/css/mixin.less");
   main{
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
     .icon-fanhui,.icon-fenxiang{
       font-size: 18px;
     }
@@ -166,17 +182,20 @@ export default {
       letter-spacing: 1px;
     }
     section{
-      padding: 60px 12px 0;
-      font-size: 16px;
+      padding: 14px 12px 0;
+      font-size: @font-size-md;
+      font-family: "苹方";
+      height: 100%;
+      overflow: auto;
       .about{
         box-sizing: border-box;
-        margin-bottom: 16px;
+        margin-bottom: 14px;
         background-color: #fff;
         border-radius: 8px;
-        padding: 10px 8px;
+        padding: 8px;
         .imgbox{
           width: 100%;
-          height: 180px;
+          height: 164px;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -185,15 +204,16 @@ export default {
           }
         }
         .info{
-          font-size: 15px;
+          font-size: 14px;
           p{
             position: relative;
+            margin: 8px 0;
             .van-tag{
               position: relative;
               top: -1.5px;
             }
             span{
-              margin-right: 3px;
+              margin-right: 4px;
             }
           }
           .price{
@@ -207,18 +227,17 @@ export default {
         }
       }
       .site-serve{
-        padding: 0 0 12px;
+        padding: 0 0 14px;
         box-sizing: border-box;
-        font-size: 13px;
+        font-size: @font-size-sm;
         .promise{
           display: flex;
           justify-content: space-between;
           align-items: center;
           padding: 8px;
           border-radius: 8px;
-          padding: 10px 8px;
           background-color: #fff;
-          margin-bottom: 16px;
+          margin-bottom: 7px;
           color: #888;
           i{
             color: @red;
@@ -232,10 +251,11 @@ export default {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 10px 8px;
+          padding: 8px;
           box-sizing: border-box;
           border-radius: 8px;
           background-color: #fff;
+          font-size: @font-size-sm;
           p{
             margin: 0;
             flex: 1;
@@ -248,24 +268,26 @@ export default {
         }
       }
       .goods-detail{
-        padding: 0 0 12px;
+        padding: 0 0 14px;
         .title{
           position: relative;
-          padding: 10px 0;
+          padding-bottom: 14px;
           color: rgba(0, 0, 0, 89%);
-          &::before{
-            content: "";
-            width: 2px;
-            height: 50%;
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            margin: auto 0;
-            background-color: rgba(0, 0, 0, 89%);
-          }
           span{
-            padding: 0 8px;
+            padding-left: 8px;
             margin: 0;
+            position: relative;
+            &::before{
+              content: "";
+              width: 2px;
+              height: 89%;
+              position: absolute;
+              top: 0;
+              left: 0;
+              bottom: 0;
+              margin: auto 0;
+              background-color: rgba(0, 0, 0, 89%);
+            }
           }
         }
         .other{
@@ -273,7 +295,7 @@ export default {
           box-sizing: border-box;
           border-radius: 8px;
           background-color: #fff;
-          font-size: 14px;
+          font-size: @font-size-sm;
           p{
             margin: 0;
             color:rgba(0, 0, 0, 64%);
@@ -287,12 +309,16 @@ export default {
           } 
         }
         .photos{
-          padding: 10px 0 0;
           .van-image{
-            margin-bottom: 10px;
+            margin-top: 14px;
+            vertical-align: bottom;
           }
         }
       }
+    }
+    .van-goods-action{
+      position: relative;
+      padding: 8px 0;
     }
   }
 </style>

@@ -54,6 +54,8 @@ export default {
 
 <style lang="less" scoped>
   .home-top-nav{
-    min-height: 100vh;
+    height: 100%;
+    overflow-y: auto;
+    flex-grow: 1;
   }
 </style>

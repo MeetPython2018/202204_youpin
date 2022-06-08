@@ -1,9 +1,10 @@
 <template>
   <main>
     <div class="title">
-      <van-nav-bar title="回收" :fixed="true"/>
+      <van-nav-bar title="回收" :fixed="false"/>
     </div>
-    <div class="swipe-wrap">
+    <div class="con">
+<div class="swipe-wrap">
       <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white" @change="onChange">
         <van-swipe-item v-for="value in 2" :key="value">
           <van-image src="" radius="8" width="100%" height="150">
@@ -39,8 +40,8 @@
       <ul class="van-hairline--bottom">
         <li v-for="value in 5" :key="value">
           <van-image
-            width="100%"
-            height="60"
+            width="89%"
+            height="54"
             src=""
           />
         </li>
@@ -119,6 +120,8 @@
         </div>
       </div>
     </div>
+    </div>
+    
   </main>
 </template>
 
@@ -155,153 +158,157 @@ export default {
 <style lang="less" scoped>
   @import url("../../common/css/mixin.less");
   main{
-    padding: 0 12px;
-    .swipe-wrap{
-      width: 100%;
-      margin-bottom: 16px;
-      margin-top: 60px;
-      .van-swipe-item{
-        background-color: #fff;
-        border-radius: 8px;
-        .van-image{
-          vertical-align: bottom;
-        }
-      }
-      .custom-indicator {
-        width: 20%;
-        position: absolute;
-        right: 0;
-        left: 0;
-        margin: 0 auto;
-        bottom: 5px;
-        padding: 0 5px;
-        font-size: 12px;
-        display: flex;
-        justify-content: space-evenly;
-        .active{
-          background-color: @red;
-        }
-        div{
-          width: 45%;
-          height: 2px;
-          background-color: #ccc;
-        }
-      }
-    }
-    .promise{
-      width: 100%;
-      height: 30px;
-      padding: 8px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      div{
-        i{
-          color: @success;
-          font-size: @font-size-md;
-          margin-right: 5px;
-        }
-        span{
-          color: #000;
-          opacity: .7;
-          font-size: @font-size-md;
-        }
-      }
-    }
-    .business{
-      margin-bottom: 16px;
-      background-color: #fff;
-      border-radius: 8px;
-      ul:first-child{
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    .con{
+      height: 100%;
+      overflow-y: auto;
+      padding: 14px 12px;
+      .swipe-wrap{
         width: 100%;
-        padding: 10px;
-        box-sizing: border-box;
-        display: flex;
-        justify-content: space-between;
-        li{
-          text-align: center;
-          flex: 0 0 16%;
+        .van-swipe-item{
+          background-color: #fff;
+          border-radius: 8px;
+          .van-image{
+            vertical-align: bottom;
+          }
+        }
+        .custom-indicator {
+          width: 20%;
+          position: absolute;
+          right: 0;
+          left: 0;
+          margin: 0 auto;
+          bottom: 5px;
+          padding: 0 5px;
+          font-size: 12px;
+          display: flex;
+          justify-content: space-evenly;
+          .active{
+            background-color: @red;
+          }
+          div{
+            width: 45%;
+            height: 2px;
+            background-color: #ccc;
+          }
         }
       }
-      ul:last-child{
+      .promise{
+        width: 100%;
+        padding: 14px 0;
         display: flex;
         justify-content: space-between;
-        padding: 10px;
-        box-sizing: border-box;
-        li{
-          text-align: center;
-          flex: 0 0 16%;
+        align-items: center;
+        div{
+          i{
+            color: @success;
+            font-size: @font-size-md;
+            margin-right: 5px;
+          }
           span{
+            color: #000;
+            opacity: .7;
             font-size: @font-size-md;
           }
         }
       }
-    }
-    .partner{ 
-      display: flex;
-      justify-content: space-around;
-      margin-bottom: 16px;
-    }
-    .explain{
-      .flow{
-        margin-bottom: 16px;
-      }
-      ul{
-        .van-notice-bar{
-          border-radius: 8px;
-          margin-bottom: 12px;
-        }
-      }
-      .title{
-        position: relative;
-        margin-bottom: 8px;
-        .van-notice-bar--wrapable{
-          padding: 10px 5px;
-        }
-        span{
-          margin-left: 8px;
-          font-size: @font-size-lg;
-        }
-        line-height: 20px;
-        &::before{
-          content: "";
-          width: 2px;
-          height: 100%;
-          position: absolute;
-          background: #333;
-        }
-      }
-      .wrap{
-        padding: 10px 0;
-        border-radius: 8px;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
+      .business{
+        margin-bottom: 14px;
         background-color: #fff;
-        div{
+        border-radius: 8px;
+        ul:first-child{
+          width: 100%;
+          padding: 10px;
+          box-sizing: border-box;
           display: flex;
-          flex-direction: column;
-          align-items: center;
+          justify-content: space-between;
+          li{
+            text-align: center;
+            flex: 0 0 16%;
+          }
+        }
+        ul:last-child{
+          display: flex;
+          justify-content: space-between;
+          padding: 8px;
+          box-sizing: border-box;
+          li{
+            text-align: center;
+            flex: 0 0 16%;
+            span{
+              font-size: @font-size-md;
+            }
+          }
+        }
+      }
+      .partner{ 
+        display: flex;
+        justify-content: space-evenly;
+        margin-bottom: 14px;
+      }
+      .explain{
+        .flow{
+          margin-bottom: 14px;
+        }
+        ul{
+          .van-notice-bar{
+            border-radius: 8px;
+            margin-bottom: 14px;
+          }
+        }
+        .title{
           position: relative;
-          &:nth-child(1)::after, &:nth-child(2)::after,&:nth-child(3)::after{
-            width: 90%;
-            content: "";
-            position: absolute;
-            right: -90%;
-            top: 15px;
-            border-top: 1px dashed @success;
-          }
-          &:nth-child(3)::after{
-            right: -100%;
-          }
-        }
-        i{
-          font-size: 26px;
           margin-bottom: 8px;
-          color: @success;
+          .van-notice-bar--wrapable{
+            padding: 10px 5px;
+          }
+          span{
+            margin-left: 8px;
+            font-size: @font-size-lg;
+          }
+          line-height: 20px;
+          &::before{
+            content: "";
+            width: 2px;
+            height: 100%;
+            position: absolute;
+            background: #333;
+          }
         }
-        span{
-          font-size: @font-size-sm;
+        .wrap{
+          padding: 10px 0;
+          border-radius: 8px;
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+          background-color: #fff;
+          div{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            &:nth-child(1)::after, &:nth-child(2)::after,&:nth-child(3)::after{
+              width: 90%;
+              content: "";
+              position: absolute;
+              right: -90%;
+              top: 15px;
+              border-top: 1px dashed @success;
+            }
+            &:nth-child(3)::after{
+              right: -100%;
+            }
+          }
+          i{
+            font-size: 26px;
+            margin-bottom: 8px;
+            color: @success;
+          }
+          span{
+            font-size: @font-size-sm;
+          }
         }
       }
     }

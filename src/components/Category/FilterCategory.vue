@@ -104,7 +104,9 @@ export default {
 <style lang="less" scoped>
   @import url("../../common/css/mixin.less");
   main{
-    position: relative;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
     .van-dropdown-menu{
       box-shadow: none;
     }
@@ -112,9 +114,6 @@ export default {
       width: 100%;
       padding: 0 12px;
       box-sizing: border-box;
-      position: fixed;
-      z-index: 99;
-      top: 0;
       background-color: #fff;
       .searchbox{
         display: flex;
@@ -125,18 +124,21 @@ export default {
       }
     }
     .con{
-      padding: 100px 12px;
-    }
-    .wrap{
-      display: flex;
-      justify-content: space-between;
-      margin-top: 16px;
-      flex-wrap: wrap;
-      a{
-        width: 48%;
-        display: inline-block;
-        margin-bottom: 16px;
+      padding: 14px 12px 0;
+      height: 100%;
+      overflow-y: auto;
+      background-color: #f2f2f2;
+      .wrap{
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        a{
+          width: 48%;
+          display: inline-block;
+          margin-bottom: 14px;
+        }
       }
     }
+    
   }
 </style>
